@@ -2,746 +2,236 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Morocco Guides</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root {
-  --bg:        #080F1E;
-  --bg2:       #0D1B35;
-  --bg3:       #112240;
-  --bg4:       #1A3358;
-  --border:    #1E3A5F;
-  --border2:   #2A4A72;
-  --accent:    #3B82F6;
-  --accent2:   #60A5FA;
-  --gold:      #F0B429;
-  --gold2:     #FCD34D;
-  --text:      #EEF2FF;
-  --text2:     #A8C0E0;
-  --text3:     #5A7A9F;
-  --success:   #22C55E;
-  --danger:    #EF4444;
-  --radius:    14px;
-  --radius-sm: 8px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  font-family:'Outfit',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  font-size:15px;
-  line-height:1.6;
-}
-
-/* ─── SCROLLBAR ─── */
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:var(--bg2)}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-
-/* ─── NAV ─── */
-nav{
-  position:sticky;top:0;z-index:200;
-  background:rgba(8,15,30,0.92);
-  backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--border);
-  height:62px;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 24px;
-}
-.brand{
-  font-family:'Playfair Display',serif;
-  font-size:20px;
-  color:var(--text);
-  letter-spacing:.02em;
-}
-.brand span{color:var(--accent2);font-style:italic}
-.nav-right{display:flex;align-items:center;gap:10px}
-.lang-btn{
-  background:var(--bg3);
-  border:1px solid var(--border);
-  color:var(--text2);
-  padding:5px 12px;
-  border-radius:20px;
-  font-family:'Outfit',sans-serif;
-  font-size:12px;
-  font-weight:500;
-  cursor:pointer;
-  transition:all .2s;
-  letter-spacing:.04em;
-}
-.lang-btn.active,.lang-btn:hover{background:var(--accent);border-color:var(--accent);color:white}
-.btn-admin{
-  background:transparent;
-  border:1px solid var(--border2);
-  color:var(--text2);
-  padding:7px 16px;
-  border-radius:20px;
-  font-family:'Outfit',sans-serif;
-  font-size:13px;
-  font-weight:500;
-  cursor:pointer;
-  transition:all .2s;
-  margin-left:4px;
-}
+:root{--bg:#080F1E;--bg2:#0D1B35;--bg3:#112240;--bg4:#1A3358;--border:#1E3A5F;--border2:#2A4A72;--accent:#3B82F6;--accent2:#60A5FA;--gold:#F0B429;--text:#EEF2FF;--text2:#A8C0E0;--text3:#5A7A9F;--success:#22C55E;--danger:#EF4444;--r:12px;--r-sm:8px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+nav{position:sticky;top:0;z-index:100;background:rgba(8,15,30,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+.brand{font-family:'Playfair Display',serif;font-size:19px;color:var(--text)}
+.brand em{color:var(--accent2);font-style:italic}
+.btn-admin{background:transparent;border:1px solid var(--border2);color:var(--text3);padding:6px 14px;border-radius:20px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
 .btn-admin:hover{border-color:var(--accent);color:var(--accent2)}
-
-/* ─── PAGES ─── */
-.page{display:none}
-.page.active{display:block}
-
-/* ─── LOADER ─── */
-.loader{
-  display:flex;align-items:center;justify-content:center;
-  min-height:60vh;
-  flex-direction:column;gap:16px;
-  color:var(--text3);
-  font-size:14px;
-}
-.spinner{
-  width:36px;height:36px;
-  border:3px solid var(--border2);
-  border-top-color:var(--accent);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-}
+.page{display:none}.page.active{display:block}
+.loader{display:flex;align-items:center;justify-content:center;min-height:60vh;flex-direction:column;gap:14px;color:var(--text3);font-size:13px}
+.spinner{width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* ─── GUIDE PROFILE PAGE ─── */
-.profile-hero{
-  position:relative;
-  background:linear-gradient(160deg, var(--bg3) 0%, var(--bg2) 60%, var(--bg) 100%);
-  border-bottom:1px solid var(--border);
-  padding:48px 24px 40px;
-  text-align:center;
-  overflow:hidden;
-}
-.profile-hero::before{
-  content:'';
-  position:absolute;inset:0;
-  background:radial-gradient(ellipse 60% 50% at 50% 0%, rgba(59,130,246,.12) 0%, transparent 70%);
-  pointer-events:none;
-}
-.profile-photo{
-  width:110px;height:110px;
-  border-radius:50%;
-  border:3px solid var(--accent);
-  object-fit:cover;
-  margin:0 auto 16px;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--bg4);
-  font-size:44px;
-  overflow:hidden;
-  box-shadow:0 0 0 6px rgba(59,130,246,.15);
-}
+.profile-hero{background:linear-gradient(160deg,var(--bg3) 0%,var(--bg2) 60%,var(--bg) 100%);border-bottom:1px solid var(--border);padding:32px 20px 24px;text-align:center;position:relative;overflow:hidden}
+.profile-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(59,130,246,.1) 0%,transparent 70%);pointer-events:none}
+.profile-photo{width:90px;height:90px;border-radius:50%;border:2.5px solid var(--accent);background:var(--bg4);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:38px;overflow:hidden;box-shadow:0 0 0 5px rgba(59,130,246,.12);position:relative;z-index:1}
 .profile-photo img{width:100%;height:100%;object-fit:cover}
-.profile-name{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(26px,5vw,36px);
-  font-weight:600;
-  margin-bottom:4px;
-  color:var(--text);
-}
-.profile-specialty{
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.12em;
-  color:var(--accent2);
-  font-weight:600;
-  margin-bottom:16px;
-}
-.profile-score-pill{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(59,130,246,.15);
-  border:1px solid rgba(59,130,246,.3);
-  padding:6px 18px;
-  border-radius:24px;
-  font-size:15px;
-  font-weight:600;
-  color:var(--text);
-  margin-bottom:12px;
-}
-.profile-score-pill .stars{color:var(--gold);font-size:13px;letter-spacing:1px}
-.profile-tel{
-  color:var(--text3);
-  font-size:13px;
-  margin-top:8px;
-  display:flex;align-items:center;justify-content:center;gap:6px;
-}
-.profile-tel a{color:var(--accent2);text-decoration:none}
-
-.profile-body{
-  max-width:680px;
-  margin:0 auto;
-  padding:32px 20px;
-}
-.section-label{
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.12em;
-  color:var(--text3);
-  font-weight:600;
-  margin-bottom:12px;
-}
-.bio-card{
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:20px 22px;
-  color:var(--text2);
-  font-size:14px;
-  line-height:1.75;
-  margin-bottom:28px;
-}
-.criteria-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
-  gap:10px;
-  margin-bottom:28px;
-}
-.criteria-item{
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:var(--radius-sm);
-  padding:12px 14px;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.criteria-name{font-size:12px;color:var(--text2);font-weight:500}
-.criteria-score{
-  font-size:14px;font-weight:600;
-  color:var(--accent2);
-}
-
-.reviews-section{margin-bottom:28px}
-.review-card{
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:18px 20px;
-  margin-bottom:12px;
-}
-.review-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
-.review-author{font-weight:600;font-size:14px;color:var(--text)}
-.review-meta{font-size:11px;color:var(--text3);margin-top:2px}
-.review-score-badge{
-  background:rgba(59,130,246,.2);
-  border:1px solid rgba(59,130,246,.3);
-  color:var(--accent2);
-  padding:3px 10px;
-  border-radius:12px;
-  font-size:12px;
-  font-weight:600;
-  white-space:nowrap;
-}
-.review-text{
-  font-size:14px;
-  color:var(--text2);
-  line-height:1.7;
-  font-style:italic;
-}
-
-.btn-rate{
-  width:100%;
-  background:var(--accent);
-  color:white;
-  border:none;
-  padding:15px;
-  border-radius:var(--radius);
-  font-family:'Outfit',sans-serif;
-  font-size:15px;
-  font-weight:600;
-  cursor:pointer;
-  transition:background .2s, transform .1s;
-  letter-spacing:.02em;
-}
-.btn-rate:hover{background:#2563EB;transform:translateY(-1px)}
-.btn-rate:active{transform:translateY(0)}
-
-/* ─── RATING FORM ─── */
-.form-wrap{max-width:600px;margin:0 auto;padding:28px 20px}
-.btn-back{
-  background:none;border:none;
-  color:var(--accent2);cursor:pointer;
-  font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;
-  display:flex;align-items:center;gap:6px;
-  padding:0;margin-bottom:24px;
-  transition:color .2s;
-}
-.btn-back:hover{color:var(--text)}
-.form-guide-banner{
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:14px 18px;
-  display:flex;align-items:center;gap:14px;
-  margin-bottom:20px;
-}
-.form-guide-mini-photo{
-  width:48px;height:48px;border-radius:50%;
-  background:var(--bg4);overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;flex-shrink:0;border:2px solid var(--border2);
-}
-.form-guide-mini-photo img{width:100%;height:100%;object-fit:cover}
-.form-guide-mini-name{font-weight:600;font-size:15px;color:var(--text)}
-.form-guide-mini-spec{font-size:12px;color:var(--text3)}
-
-.field-card{
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:18px 20px;
-  margin-bottom:12px;
-}
-.field-label{
-  display:block;
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  color:var(--text3);
-  font-weight:600;
-  margin-bottom:10px;
-}
-.field-label .opt{font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);opacity:.6}
-.form-input,.form-textarea{
-  width:100%;
-  background:var(--bg3);
-  border:1px solid var(--border);
-  border-radius:var(--radius-sm);
-  padding:10px 14px;
-  font-family:'Outfit',sans-serif;
-  font-size:14px;
-  color:var(--text);
-  outline:none;
-  transition:border-color .2s;
-}
-.form-input:focus,.form-textarea:focus{border-color:var(--accent);background:var(--bg4)}
-.form-textarea{resize:vertical;min-height:80px;line-height:1.6}
+.profile-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--text);margin-bottom:3px;position:relative;z-index:1}
+.profile-specialty{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--accent2);font-weight:600;margin-bottom:12px;position:relative;z-index:1}
+.score-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);padding:5px 16px;border-radius:20px;font-size:14px;font-weight:600;color:var(--text);margin-bottom:16px;position:relative;z-index:1}
+.score-pill .stars{color:var(--gold);font-size:12px;letter-spacing:1px}
+.score-pill .cnt{font-size:11px;color:var(--text3);font-weight:400}
+.phone-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid var(--border);padding:7px 16px;border-radius:20px;color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:18px;position:relative;z-index:1}
+.social-row{display:flex;justify-content:center;align-items:center;gap:10px;position:relative;z-index:1;flex-wrap:wrap}
+.soc-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;transition:transform .15s,opacity .15s;flex-shrink:0}
+.soc-icon:hover{transform:scale(1.08);opacity:.9}
+.soc-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)}
+.soc-fb{background:#1877F2}.soc-wa{background:#25D366}.soc-li{background:#0A66C2}
+.soc-gallery{background:var(--bg4);border:1.5px solid var(--accent)}
+.profile-body{max-width:640px;margin:0 auto;padding:20px 16px}
+.section-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--text3);font-weight:600;margin-bottom:8px}
+.bio-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;color:var(--text2);font-size:13px;line-height:1.75;margin-bottom:20px}
+.bio-text{overflow:hidden;position:relative;transition:max-height .4s ease}
+.bio-text.collapsed{max-height:126px}
+.bio-text.collapsed::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to bottom,transparent,var(--bg3))}
+.bio-toggle{display:block;width:100%;background:none;border:none;color:var(--accent2);font-size:12px;font-weight:500;font-family:'Outfit',sans-serif;cursor:pointer;padding:8px 0 0;text-align:center;transition:color .2s}
+.bio-toggle:hover{color:var(--text)}
+.review-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.review-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.review-author{font-weight:600;font-size:13px;color:var(--text)}
+.review-meta{font-size:10px;color:var(--text3);margin-top:2px}
+.review-badge{background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.3);color:var(--accent2);padding:2px 9px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap}
+.review-text{font-size:12px;color:var(--text2);font-style:italic;line-height:1.6}
+.btn-rate{width:100%;background:var(--accent);color:white;border:none;padding:15px;border-radius:var(--r);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s,transform .1s;margin-top:4px}
+.btn-rate:hover{background:#2563EB}.btn-rate:active{transform:scale(.98)}
+.gallery-overlay{position:fixed;inset:0;z-index:400;background:rgba(4,8,18,.96);display:flex;flex-direction:column;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.gallery-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.gallery-title{font-size:15px;font-weight:600;color:var(--text)}
+.gallery-counter{font-size:13px;color:var(--text3)}
+.gallery-close{width:32px;height:32px;border-radius:50%;background:var(--bg4);border:none;color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.gallery-close:hover{background:var(--border2)}
+.gallery-stage{flex:1;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.gallery-img{max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-select:none}
+.gallery-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text3);font-size:13px}
+.gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid var(--border2);color:white;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;z-index:2}
+.gallery-arrow:hover{background:rgba(59,130,246,.4)}
+.gallery-arrow.prev{left:12px}.gallery-arrow.next{right:12px}
+.gallery-dots{display:flex;justify-content:center;gap:6px;padding:14px;flex-shrink:0}
+.gdot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:background .2s,transform .2s;cursor:pointer}
+.gdot.active{background:var(--accent);transform:scale(1.3)}
+.form-wrap{max-width:600px;margin:0 auto;padding:20px 16px}
+.btn-back{background:none;border:none;color:var(--accent2);cursor:pointer;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;display:flex;align-items:center;gap:5px;padding:0;margin-bottom:22px}
+.form-guide-banner{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.form-mini-photo{width:46px;height:46px;border-radius:50%;background:var(--bg4);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:2px solid var(--border2)}
+.form-mini-photo img{width:100%;height:100%;object-fit:cover}
+.form-mini-name{font-weight:600;font-size:14px;color:var(--text)}.form-mini-spec{font-size:11px;color:var(--text3)}
+.field-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.field-lbl{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-weight:600;margin-bottom:8px}
+.field-lbl .opt{text-transform:none;letter-spacing:0;opacity:.6}
+.form-input,.form-textarea{width:100%;background:var(--bg4);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .2s}
+.form-input:focus,.form-textarea:focus{border-color:var(--accent)}
+.form-textarea{resize:vertical;min-height:76px;line-height:1.6}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:480px){.form-row{grid-template-columns:1fr}}
-
-.criteria-card{
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:16px 18px;
-  margin-bottom:10px;
-}
-.criteria-header{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:12px;
-}
-.criteria-title{font-weight:600;font-size:14px;color:var(--text)}
-.criteria-val{
-  width:32px;height:32px;
-  background:var(--accent);
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;
-  color:white;
-  transition:transform .15s;
-}
-.criteria-val.empty{background:var(--bg4);color:var(--text3)}
-.dots{display:flex;gap:5px;flex-wrap:wrap}
-.dot{
-  width:28px;height:28px;border-radius:50%;
-  background:var(--bg3);border:1.5px solid var(--border2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:600;color:var(--text3);
-  cursor:pointer;
-  transition:all .12s;
-  user-select:none;
-}
-.dot:hover{border-color:var(--accent2);color:var(--accent2)}
-.dot.lit{background:rgba(59,130,246,.25);border-color:var(--accent);color:var(--accent2)}
-.dot.sel{background:var(--accent);border-color:var(--accent);color:white;transform:scale(1.15)}
-
-.btn-submit{
-  width:100%;
-  background:var(--accent);
-  color:white;border:none;
-  padding:15px;
-  border-radius:var(--radius);
-  font-family:'Outfit',sans-serif;
-  font-size:15px;font-weight:600;
-  cursor:pointer;
-  transition:background .2s,transform .1s;
-  margin-top:8px;
-}
-.btn-submit:hover{background:#2563EB;transform:translateY(-1px)}
+@media(max-width:420px){.form-row{grid-template-columns:1fr}}
+.criteria-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.criteria-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.criteria-lbl{font-weight:500;font-size:14px;color:var(--text)}
+.criteria-val{width:30px;height:30px;border-radius:50%;background:var(--bg4);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text3);transition:all .15s}
+.criteria-val.set{background:var(--accent);border-color:var(--accent);color:white}
+.dots{display:flex;gap:4px;flex-wrap:wrap}
+.dot{width:27px;height:27px;border-radius:50%;background:var(--bg4);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .12s;user-select:none}
+.dot:hover{border-color:var(--accent2)}
+.dot.lit{background:rgba(59,130,246,.2);border-color:var(--accent);color:var(--accent2)}
+.dot.sel{background:var(--accent);border-color:var(--accent);color:white;transform:scale(1.12)}
+.btn-submit{width:100%;background:var(--accent);color:white;border:none;padding:15px;border-radius:var(--r);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s,transform .1s;margin-top:6px}
+.btn-submit:hover{background:#2563EB}.btn-submit:active{transform:scale(.98)}
 .btn-submit:disabled{background:var(--bg4);color:var(--text3);cursor:not-allowed;transform:none}
-
-/* ─── SUCCESS ─── */
-.success-wrap{
-  max-width:420px;margin:80px auto;
-  padding:0 24px;text-align:center;
-}
-.success-icon{
-  width:72px;height:72px;
-  background:rgba(34,197,94,.15);
-  border:2px solid rgba(34,197,94,.4);
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:28px;
-  margin:0 auto 20px;
-}
-.success-title{
-  font-family:'Playfair Display',serif;
-  font-size:30px;font-weight:600;
-  margin-bottom:10px;color:var(--text);
-}
-.success-msg{color:var(--text2);font-size:14px;line-height:1.7;margin-bottom:24px}
-
-/* ─── LOGIN ─── */
-.login-wrap{max-width:360px;margin:80px auto;padding:0 20px}
-.login-card{
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:32px;
-  box-shadow:0 20px 60px rgba(0,0,0,.4);
-}
-.login-icon{font-size:32px;margin-bottom:16px}
-.login-title{
-  font-family:'Playfair Display',serif;
-  font-size:24px;font-weight:600;
-  margin-bottom:4px;
-}
-.login-sub{font-size:13px;color:var(--text3);margin-bottom:24px}
-.login-label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-weight:600;margin-bottom:8px}
-.login-input{
-  width:100%;
-  background:var(--bg3);
-  border:1px solid var(--border);
-  border-radius:var(--radius-sm);
-  padding:11px 14px;
-  font-family:'Outfit',sans-serif;font-size:14px;
-  color:var(--text);outline:none;
-  margin-bottom:16px;
-  transition:border-color .2s;
-}
+.success-wrap{max-width:400px;margin:80px auto;padding:0 20px;text-align:center}
+.success-icon{width:68px;height:68px;background:rgba(34,197,94,.15);border:2px solid rgba(34,197,94,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 18px}
+.success-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;margin-bottom:8px}
+.success-msg{color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:22px}
+.login-wrap{max-width:340px;margin:70px auto;padding:0 18px}
+.login-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.login-icon{font-size:28px;margin-bottom:14px}
+.login-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--text3);margin-bottom:22px}
+.login-lbl{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-weight:600;margin-bottom:7px}
+.login-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px 13px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:14px;transition:border-color .2s}
 .login-input:focus{border-color:var(--accent)}
-.login-error{
-  color:var(--danger);font-size:13px;
-  margin-bottom:12px;
-  display:none;
-  background:rgba(239,68,68,.1);
-  border:1px solid rgba(239,68,68,.2);
-  border-radius:6px;padding:8px 12px;
-}
-
-/* ─── ADMIN ─── */
-.admin-wrap{max-width:1000px;margin:0 auto;padding:28px 20px}
-.admin-header{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:24px;flex-wrap:wrap;gap:12px;
-}
-.admin-title{
-  font-family:'Playfair Display',serif;
-  font-size:26px;font-weight:600;color:var(--text);
-}
-.tabs{display:flex;gap:6px;margin-bottom:22px;flex-wrap:wrap}
-.tab{
-  padding:7px 18px;
-  border-radius:20px;
-  border:1px solid var(--border);
-  background:var(--bg2);
-  font-family:'Outfit',sans-serif;
-  font-size:13px;font-weight:500;
-  color:var(--text2);cursor:pointer;
-  transition:all .2s;
-}
+.login-err{color:var(--danger);font-size:12px;margin-bottom:10px;display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:8px 11px}
+.admin-wrap{max-width:980px;margin:0 auto;padding:22px 16px}
+.admin-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.admin-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--text)}
+.tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.tab{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;transition:all .2s}
 .tab.active{background:var(--accent);border-color:var(--accent);color:white}
-.tab:hover:not(.active){border-color:var(--border2);color:var(--text)}
-
-/* table */
-.tbl-wrap{
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  overflow:hidden;
-  overflow-x:auto;
-}
+.tbl-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:13px}
-thead th{
-  background:var(--bg3);
-  padding:11px 14px;
-  text-align:left;
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  color:var(--text3);
-  font-weight:600;
-  white-space:nowrap;
-}
-tbody td{
-  padding:12px 14px;
-  border-top:1px solid var(--border);
-  vertical-align:middle;
-  color:var(--text2);
-}
-tbody tr:hover td{background:rgba(255,255,255,.02)}
-
-.score-pill{
-  display:inline-block;
-  background:rgba(59,130,246,.2);
-  border:1px solid rgba(59,130,246,.3);
-  color:var(--accent2);
-  padding:2px 10px;
-  border-radius:12px;
-  font-size:12px;font-weight:600;
-}
-.score-pill.gold{background:rgba(240,180,41,.15);border-color:rgba(240,180,41,.3);color:var(--gold2)}
-
-.toggle{
-  width:38px;height:22px;
-  background:var(--bg4);border-radius:11px;
-  position:relative;cursor:pointer;
-  border:1px solid var(--border2);
-  transition:background .2s;flex-shrink:0;
-}
+thead th{background:var(--bg3);padding:10px 13px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-weight:600;white-space:nowrap}
+tbody td{padding:11px 13px;border-top:1px solid var(--border);vertical-align:middle;color:var(--text2)}
+tbody tr:hover td{background:rgba(255,255,255,.015)}
+.score-pill-sm{display:inline-block;background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.3);color:var(--accent2);padding:2px 9px;border-radius:10px;font-size:11px;font-weight:600}
+.score-pill-gold{background:rgba(240,180,41,.15);border-color:rgba(240,180,41,.3);color:#FCD34D}
+.toggle{width:36px;height:20px;background:var(--bg4);border-radius:10px;position:relative;cursor:pointer;border:1px solid var(--border2);transition:background .2s;flex-shrink:0}
 .toggle.on{background:var(--success);border-color:var(--success)}
-.toggle::after{
-  content:'';position:absolute;
-  width:16px;height:16px;
-  background:white;border-radius:50%;
-  top:2px;left:2px;
-  transition:left .2s;
-  box-shadow:0 1px 4px rgba(0,0,0,.3);
-}
+.toggle::after{content:'';position:absolute;width:14px;height:14px;background:white;border-radius:50%;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .toggle.on::after{left:18px}
-.toggle-row{display:flex;align-items:center;gap:8px}
-.toggle-label{font-size:12px;color:var(--text3)}
-
-.btn-xs{
-  padding:4px 10px;
-  border-radius:6px;
-  font-family:'Outfit',sans-serif;
-  font-size:12px;font-weight:500;
-  cursor:pointer;
-  border:1px solid var(--border2);
-  background:var(--bg3);
-  color:var(--text2);
-  transition:all .15s;
-}
+.toggle-row{display:flex;align-items:center;gap:7px}
+.toggle-lbl{font-size:11px;color:var(--text3)}
+.btn-xs{padding:4px 10px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);transition:all .15s}
 .btn-xs:hover{border-color:var(--accent);color:var(--accent2)}
-.btn-xs.danger{border-color:rgba(239,68,68,.3);color:var(--danger);background:rgba(239,68,68,.08)}
-.btn-xs.danger:hover{background:rgba(239,68,68,.15)}
+.btn-xs.danger{border-color:rgba(239,68,68,.3);color:var(--danger);background:rgba(239,68,68,.07)}
 .btn-xs.primary{background:var(--accent);border-color:var(--accent);color:white}
-
-.share-btn{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(34,197,94,.15);
-  border:1px solid rgba(34,197,94,.3);
-  color:#4ADE80;
-  padding:5px 12px;border-radius:8px;
-  font-size:12px;font-weight:500;cursor:pointer;
-  transition:all .2s;
-  font-family:'Outfit',sans-serif;
-}
-.share-btn:hover{background:rgba(34,197,94,.25)}
-
-.rank-num{
-  width:28px;height:28px;
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;font-weight:700;
-  background:var(--bg3);color:var(--text3);
-  border:1px solid var(--border);
-}
-.rank-1{background:rgba(240,180,41,.2);color:var(--gold2);border-color:rgba(240,180,41,.4)}
-.rank-2{background:rgba(168,192,224,.1);color:#C0C8D8;border-color:rgba(168,192,224,.3)}
-.rank-3{background:rgba(196,125,58,.15);color:#E0A060;border-color:rgba(196,125,58,.3)}
-
-.guide-mini-row{display:flex;align-items:center;gap:10px}
-.mini-photo{
-  width:34px;height:34px;border-radius:50%;
-  background:var(--bg4);overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;flex-shrink:0;border:1px solid var(--border2);
-}
+.btn-xs.green{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:#4ADE80}
+.share-btn{display:inline-flex;align-items:center;gap:5px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:#4ADE80;padding:4px 11px;border-radius:7px;font-size:11px;font-weight:500;cursor:pointer;transition:all .2s;font-family:'Outfit',sans-serif}
+.share-btn:hover{background:rgba(34,197,94,.22)}
+.rank-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--bg3);color:var(--text3);border:1px solid var(--border)}
+.r1{background:rgba(240,180,41,.18);color:#FCD34D;border-color:rgba(240,180,41,.35)}
+.r2{background:rgba(168,192,224,.08);color:#C0C8D8;border-color:rgba(168,192,224,.25)}
+.r3{background:rgba(196,125,58,.13);color:#E0A060;border-color:rgba(196,125,58,.28)}
+.mini-row{display:flex;align-items:center;gap:9px}
+.mini-photo{width:32px;height:32px;border-radius:50%;background:var(--bg4);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;border:1px solid var(--border2)}
 .mini-photo img{width:100%;height:100%;object-fit:cover}
-.mini-name{font-weight:600;font-size:13px;color:var(--text)}
-.mini-spec{font-size:11px;color:var(--text3)}
-
-/* ─── MODAL ─── */
-.overlay{
-  position:fixed;inset:0;
-  background:rgba(4,8,18,.7);
-  backdrop-filter:blur(6px);
-  z-index:500;
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;
-}
-.modal{
-  background:var(--bg2);
-  border:1px solid var(--border2);
-  border-radius:var(--radius);
-  padding:28px;
-  max-width:540px;width:100%;
-  max-height:90vh;overflow-y:auto;
-  box-shadow:0 24px 80px rgba(0,0,0,.6);
-  animation:modalIn .2s ease;
-}
-@keyframes modalIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
-.modal-title{
-  font-family:'Playfair Display',serif;
-  font-size:20px;font-weight:600;
-  margin-bottom:20px;color:var(--text);
-}
-.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
-
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mini-name{font-weight:600;font-size:12px;color:var(--text)}.mini-spec{font-size:10px;color:var(--text3)}
+.empty{text-align:center;padding:48px 20px;color:var(--text3);font-size:13px}
+.empty .ei{font-size:32px;margin-bottom:10px}
+.overlay{position:fixed;inset:0;background:rgba(4,8,18,.75);backdrop-filter:blur(6px);z-index:300;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:24px;max-width:520px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.6);animation:mIn .18s ease}
+@keyframes mIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.modal-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:600;margin-bottom:18px;color:var(--text)}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.modal-lbl{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);font-weight:600;margin-bottom:6px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 .form-grid .full{grid-column:1/-1}
-.modal-label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);font-weight:600;margin-bottom:6px}
-
-/* ─── SHARE PANEL ─── */
-.share-panel{
-  background:var(--bg3);
-  border:1px solid var(--border);
-  border-radius:var(--radius-sm);
-  padding:14px 16px;
-  margin-top:16px;
-}
-.share-url{
-  font-size:12px;color:var(--text2);
-  word-break:break-all;
-  background:var(--bg);
-  padding:8px 12px;
-  border-radius:6px;
-  border:1px solid var(--border);
-  margin-bottom:12px;
-  font-family:monospace;
-}
-.share-actions{display:flex;gap:8px;flex-wrap:wrap}
-.share-action-btn{
-  display:flex;align-items:center;gap:6px;
-  padding:8px 14px;
-  border-radius:8px;
-  font-family:'Outfit',sans-serif;
-  font-size:13px;font-weight:500;
-  cursor:pointer;border:none;
-  transition:opacity .2s;
-}
-.share-action-btn:hover{opacity:.85}
+.photo-upload{border:2px dashed var(--border2);border-radius:var(--r-sm);padding:16px;text-align:center;cursor:pointer;transition:border-color .2s}
+.photo-upload:hover{border-color:var(--accent)}
+.photo-circle{width:64px;height:64px;border-radius:50%;background:var(--bg4);margin:0 auto 8px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid var(--border2)}
+.photo-circle img{width:100%;height:100%;object-fit:cover}
+.photo-upload-hint{font-size:11px;color:var(--text3)}
+.social-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.social-field{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px}
+.social-field-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.social-dot{width:10px;height:10px;border-radius:50%}
+.social-lbl{font-size:12px;font-weight:500;color:var(--text2)}
+.social-check{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);cursor:pointer}
+.photos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.photo-thumb{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--bg4)}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-thumb-del{position:absolute;top:4px;right:4px;width:22px;height:22px;background:rgba(239,68,68,.85);border:none;border-radius:50%;color:white;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.photo-add{aspect-ratio:1;border-radius:8px;border:2px dashed var(--border2);background:var(--bg3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:border-color .2s;font-size:11px;color:var(--text3)}
+.photo-add:hover{border-color:var(--accent)}
+.share-url{font-size:11px;color:var(--text2);word-break:break-all;background:var(--bg);padding:8px 11px;border-radius:6px;border:1px solid var(--border);margin-bottom:10px;font-family:monospace}
+.share-actions{display:flex;gap:7px;flex-wrap:wrap}
+.sha-btn{display:flex;align-items:center;gap:5px;padding:8px 13px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;cursor:pointer;border:none;transition:opacity .2s;text-decoration:none}
+.sha-btn:hover{opacity:.85}
 .sha-copy{background:var(--bg4);color:var(--text);border:1px solid var(--border2)}
-.sha-wa{background:#25D366;color:white}
-.sha-mail{background:var(--accent);color:white}
-
-/* ─── TOAST ─── */
-.toast{
-  position:fixed;bottom:24px;right:24px;
-  background:var(--bg3);border:1px solid var(--border2);
-  color:var(--text);
-  padding:12px 18px;border-radius:10px;
-  font-size:14px;font-weight:500;
-  z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.4);
-  transform:translateY(80px);opacity:0;
-  transition:all .3s;pointer-events:none;
-  display:flex;align-items:center;gap:8px;
-}
+.sha-wa{background:#25D366;color:white}.sha-mail{background:var(--accent);color:white}
+.toast{position:fixed;bottom:20px;right:16px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 16px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.4);transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;display:flex;align-items:center;gap:7px}
 .toast.show{transform:translateY(0);opacity:1}
-.toast.ok .ti{color:var(--success)}
-.toast.err .ti{color:var(--danger)}
-
-.empty{
-  text-align:center;padding:56px 24px;
-  color:var(--text3);font-size:14px;
-}
-.empty .ei{font-size:36px;margin-bottom:12px}
-
-/* ─── PHOTO UPLOAD ─── */
-.photo-upload-area{
-  border:2px dashed var(--border2);
-  border-radius:var(--radius-sm);
-  padding:20px;
-  text-align:center;
-  cursor:pointer;
-  transition:border-color .2s;
-}
-.photo-upload-area:hover{border-color:var(--accent)}
-.photo-preview-circle{
-  width:72px;height:72px;border-radius:50%;
-  background:var(--bg4);margin:0 auto 10px;
-  overflow:hidden;display:flex;align-items:center;justify-content:center;
-  font-size:28px;border:2px solid var(--border2);
-}
-.photo-preview-circle img{width:100%;height:100%;object-fit:cover}
+.toast.ok .ti{color:var(--success)}.toast.err .ti{color:var(--danger)}
 </style>
 </head>
 <body>
-
-<!-- TOAST -->
 <div class="toast" id="toast"><span class="ti" id="toastIcon">✓</span><span id="toastMsg"></span></div>
-
-<!-- NAV -->
 <nav>
-  <div class="brand">Morocco <span>Guides</span></div>
-  <div class="nav-right">
-    <div id="langButtons"></div>
-    <button class="btn-admin" id="adminNavBtn" onclick="showPage('login')">Admin</button>
-  </div>
+  <div class="brand">Morocco <em>Guides</em></div>
+  <button class="btn-admin" id="adminBtn" onclick="showPage('login')">Admin</button>
 </nav>
-
-<!-- PAGE: GUIDE PROFILE (public) -->
 <div class="page active" id="page-profile">
   <div id="profileContent"><div class="loader"><div class="spinner"></div><span>Loading...</span></div></div>
 </div>
-
-<!-- PAGE: RATE -->
 <div class="page" id="page-rate">
   <div class="form-wrap">
-    <button class="btn-back" onclick="goBackToProfile()">← <span data-i18n="back">Back</span></button>
-    <div id="rateFormContent"></div>
+    <button class="btn-back" onclick="goBackToProfile()">← Back</button>
+    <div id="rateContent"></div>
   </div>
 </div>
-
-<!-- PAGE: SUCCESS -->
 <div class="page" id="page-success">
   <div class="success-wrap">
     <div class="success-icon">✓</div>
-    <div class="success-title" data-i18n="thanks_title">Thank you!</div>
-    <div class="success-msg" data-i18n="thanks_msg">Your evaluation has been submitted. It helps us maintain the highest quality service.</div>
-    <button class="btn-submit" onclick="goBackToProfile()" style="max-width:240px;margin:0 auto;display:block" data-i18n="back_profile">Back to profile</button>
+    <div class="success-title">Thank you!</div>
+    <div class="success-msg">Your evaluation has been submitted. It helps us maintain the highest quality of service.</div>
+    <button class="btn-submit" onclick="goBackToProfile()" style="max-width:220px;margin:0 auto;display:block">Back to profile</button>
   </div>
 </div>
-
-<!-- PAGE: LOGIN -->
 <div class="page" id="page-login">
   <div class="login-wrap">
-    <button class="btn-back" onclick="goBackToProfile()">← <span data-i18n="back">Back</span></button>
+    <button class="btn-back" onclick="goBackToProfile()">← Back</button>
     <div class="login-card">
       <div class="login-icon">🔐</div>
       <div class="login-title">Admin Login</div>
       <div class="login-sub">Morocco Guides Management</div>
-      <label class="login-label">Password</label>
+      <label class="login-lbl">Password</label>
       <input type="password" class="login-input" id="loginPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
-      <div class="login-error" id="loginErr">Incorrect password. Please try again.</div>
+      <div class="login-err" id="loginErr">Incorrect password.</div>
       <button class="btn-submit" onclick="doLogin()">Sign In</button>
     </div>
   </div>
 </div>
-
-<!-- PAGE: ADMIN -->
 <div class="page" id="page-admin">
   <div class="admin-wrap">
-    <div class="admin-header">
+    <div class="admin-hdr">
       <div class="admin-title">Admin Panel</div>
       <button class="btn-xs" onclick="logoutAdmin()">Logout</button>
     </div>
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('top10')" id="tab-top10">🏆 Top 10</button>
-      <button class="tab" onclick="switchTab('reviews')" id="tab-reviews">📋 All Reviews</button>
-      <button class="tab" onclick="switchTab('guides')" id="tab-guides">👥 Manage Guides</button>
+      <button class="tab active" id="tab-top10" onclick="switchTab('top10')">🏆 Top 10</button>
+      <button class="tab" id="tab-reviews" onclick="switchTab('reviews')">📋 All Reviews</button>
+      <button class="tab" id="tab-guides" onclick="switchTab('guides')">👥 Manage Guides</button>
     </div>
     <div id="adminContent"></div>
   </div>
 </div>
-
-<!-- MODAL -->
+<div id="galleryOverlay" style="display:none"></div>
 <div class="overlay" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-title" id="modalTitle"></div>
@@ -749,705 +239,310 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
     <div class="modal-footer" id="modalFooter"></div>
   </div>
 </div>
-
 <script>
-// ══════════════════════════════════════
-// CONFIG
-// ══════════════════════════════════════
-const SUPABASE_URL  = 'https://klxfnhykmsnumaarywhq.supabase.co';
-const SUPABASE_KEY  = 'sb_publishable_Z75BIhtJU_8hnvV5S1EFCQ_hjSz4Aok';
-const ADMIN_PASS    = 'admin2024'; // ← changez ce mot de passe !
-const APP_URL       = window.location.origin + window.location.pathname;
+const SUPABASE_URL='https://klxfnhykmsnumaarywhq.supabase.co';
+const SUPABASE_KEY='sb_publishable_Z75BIhtJU_8hnvV5S1EFCQ_hjSz4Aok';
+const ADMIN_PASS='admin2024';
+const APP_URL=window.location.origin+window.location.pathname;
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const CRITERIA=['attitude','knowledge','helpfulness','punctuality','flexibility','presentation','other'];
+const CL={attitude:'Attitude',knowledge:'Knowledge',helpfulness:'Helpfulness',punctuality:'Punctuality',flexibility:'Flexibility',presentation:'Presentation',other:'Various'};
+let currentGuide=null,currentTab='top10',scores={},adminIn=false,editGuideId=null,photoDataUrl='',galleryPhotos=[],galleryIndex=0,touchStartX=0;
+function avgR(r){return CRITERIA.reduce((s,c)=>s+(r['score_'+c]||0),0)/CRITERIA.length;}
+function starsFor(s){const n=Math.round(s/2);return'★'.repeat(n)+'☆'.repeat(5-n);}
+function getGuideId(){return new URLSearchParams(window.location.search).get('guide');}
+function buildUrl(id){return APP_URL+'?guide='+id;}
+let toastT;
+function toast(msg,type='ok'){const el=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;document.getElementById('toastIcon').textContent=type==='ok'?'✓':'✕';el.className='toast '+type+' show';clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),3000);}
+function showPage(n){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+n).classList.add('active');window.scrollTo(0,0);}
+function goBackToProfile(){showPage('profile');renderProfile();}
+const SVG_IG='<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>';
+const SVG_FB='<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>';
+const SVG_WA='<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+const SVG_LI='<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>';
+const SVG_GAL='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="white" stroke="none"/><path d="M21 15l-5-5L5 21"/></svg>';
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// ══════════════════════════════════════
-// I18N
-// ══════════════════════════════════════
-const LANGS = ['en','fr','es','pt','it'];
-const LANG_FLAGS = {en:'🇬🇧',fr:'🇫🇷',es:'🇪🇸',pt:'🇵🇹',it:'🇮🇹'};
-const T = {
-  en:{
-    back:'Back', back_profile:'Back to profile',
-    rate_guide:'Rate this guide', about:'About', contact:'Contact',
-    published_reviews:'Published Reviews', no_reviews:'No reviews yet.',
-    based_on:'based on', evaluations:'evaluations',
-    your_name:'Your name', country:'Country', circuit_dates:'Circuit dates',
-    your_review:'Your review', optional:'optional',
-    submit:'Submit evaluation',
-    thanks_title:'Thank you!', thanks_msg:'Your evaluation has been submitted. It helps us maintain the highest quality service.',
-    c_attitude:'Attitude', c_knowledge:'Knowledge', c_helpfulness:'Helpfulness',
-    c_punctuality:'Punctuality', c_flexibility:'Flexibility', c_presentation:'Presentation', c_other:'Various',
-    fill_all:'Please rate all criteria', no_name:'Please enter your name',
-    avg_criteria:'Average by Criteria',
-    share:'Share', copy_link:'Copy link', open_whatsapp:'WhatsApp', send_email:'Email',
-    link_copied:'Link copied!',
-  },
-  fr:{
-    back:'Retour', back_profile:'Retour au profil',
-    rate_guide:'Évaluer ce guide', about:'À propos', contact:'Contact',
-    published_reviews:'Avis publiés', no_reviews:'Aucun avis pour le moment.',
-    based_on:'basé sur', evaluations:'évaluations',
-    your_name:'Votre nom', country:'Pays', circuit_dates:'Dates du circuit',
-    your_review:'Votre avis', optional:'optionnel',
-    submit:'Envoyer mon évaluation',
-    thanks_title:'Merci !', thanks_msg:'Votre évaluation a été envoyée. Elle nous aide à maintenir la meilleure qualité de service.',
-    c_attitude:'Attitude', c_knowledge:'Connaissance', c_helpfulness:'Serviabilité',
-    c_punctuality:'Ponctualité', c_flexibility:'Flexibilité', c_presentation:'Présentation', c_other:'Divers',
-    fill_all:'Veuillez noter tous les critères', no_name:'Veuillez entrer votre nom',
-    avg_criteria:'Moyennes par critère',
-    share:'Partager', copy_link:'Copier le lien', open_whatsapp:'WhatsApp', send_email:'Email',
-    link_copied:'Lien copié !',
-  },
-  es:{
-    back:'Volver', back_profile:'Volver al perfil',
-    rate_guide:'Valorar este guía', about:'Sobre', contact:'Contacto',
-    published_reviews:'Reseñas publicadas', no_reviews:'Sin reseñas aún.',
-    based_on:'basado en', evaluations:'evaluaciones',
-    your_name:'Su nombre', country:'País', circuit_dates:'Fechas del circuito',
-    your_review:'Su reseña', optional:'opcional',
-    submit:'Enviar evaluación',
-    thanks_title:'¡Gracias!', thanks_msg:'Su evaluación ha sido enviada. Nos ayuda a mantener el mejor servicio.',
-    c_attitude:'Actitud', c_knowledge:'Conocimiento', c_helpfulness:'Amabilidad',
-    c_punctuality:'Puntualidad', c_flexibility:'Flexibilidad', c_presentation:'Presentación', c_other:'Varios',
-    fill_all:'Por favor califique todos los criterios', no_name:'Por favor ingrese su nombre',
-    avg_criteria:'Promedio por criterio',
-    share:'Compartir', copy_link:'Copiar enlace', open_whatsapp:'WhatsApp', send_email:'Email',
-    link_copied:'¡Enlace copiado!',
-  },
-  pt:{
-    back:'Voltar', back_profile:'Voltar ao perfil',
-    rate_guide:'Avaliar este guia', about:'Sobre', contact:'Contato',
-    published_reviews:'Avaliações publicadas', no_reviews:'Nenhuma avaliação ainda.',
-    based_on:'baseado em', evaluations:'avaliações',
-    your_name:'Seu nome', country:'País', circuit_dates:'Datas do circuito',
-    your_review:'Sua avaliação', optional:'opcional',
-    submit:'Enviar avaliação',
-    thanks_title:'Obrigado!', thanks_msg:'Sua avaliação foi enviada. Ajuda-nos a manter o melhor serviço.',
-    c_attitude:'Atitude', c_knowledge:'Conhecimento', c_helpfulness:'Prestatividade',
-    c_punctuality:'Pontualidade', c_flexibility:'Flexibilidade', c_presentation:'Apresentação', c_other:'Diversos',
-    fill_all:'Por favor avalie todos os critérios', no_name:'Por favor insira seu nome',
-    avg_criteria:'Média por critério',
-    share:'Compartilhar', copy_link:'Copiar link', open_whatsapp:'WhatsApp', send_email:'Email',
-    link_copied:'Link copiado!',
-  },
-  it:{
-    back:'Indietro', back_profile:'Torna al profilo',
-    rate_guide:'Valuta questa guida', about:'Chi è', contact:'Contatto',
-    published_reviews:'Recensioni pubblicate', no_reviews:'Nessuna recensione ancora.',
-    based_on:'basato su', evaluations:'valutazioni',
-    your_name:'Il tuo nome', country:'Paese', circuit_dates:'Date del circuito',
-    your_review:'La tua recensione', optional:'facoltativo',
-    submit:'Invia valutazione',
-    thanks_title:'Grazie!', thanks_msg:'La tua valutazione è stata inviata. Ci aiuta a mantenere il miglior servizio.',
-    c_attitude:'Atteggiamento', c_knowledge:'Conoscenza', c_helpfulness:'Disponibilità',
-    c_punctuality:'Puntualità', c_flexibility:'Flessibilità', c_presentation:'Presentazione', c_other:'Varie',
-    fill_all:'Per favore valuta tutti i criteri', no_name:'Per favore inserisci il tuo nome',
-    avg_criteria:'Media per criterio',
-    share:'Condividi', copy_link:'Copia link', open_whatsapp:'WhatsApp', send_email:'Email',
-    link_copied:'Link copiato!',
-  }
-};
-const CRITERIA = ['attitude','knowledge','helpfulness','punctuality','flexibility','presentation','other'];
-
-let lang = 'en';
-let currentGuide = null;
-let currentTab = 'top10';
-let scores = {};
-let adminLoggedIn = false;
-let photoDataUrl = '';
-
-function tr(k){ return (T[lang]&&T[lang][k]) || T.en[k] || k; }
-
-// ── Lang buttons
-function initLangButtons(){
-  const c = document.getElementById('langButtons');
-  c.style.display='flex';c.style.gap='4px';
-  c.innerHTML = LANGS.map(l=>`<button class="lang-btn ${l===lang?'active':''}" onclick="setLang('${l}')">${LANG_FLAGS[l]} ${l.toUpperCase()}</button>`).join('');
-}
-function setLang(l){
-  lang=l;
-  initLangButtons();
-  applyI18n();
-  const p = document.querySelector('.page.active');
-  if(p){
-    if(p.id==='page-profile') renderProfile();
-    if(p.id==='page-rate') renderRateForm();
-    if(p.id==='page-success') applyI18n();
-  }
-}
-function applyI18n(){
-  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent=tr(el.getAttribute('data-i18n')); });
-}
-
-// ══════════════════════════════════════
-// ROUTING — guide id from URL
-// ══════════════════════════════════════
-function getGuideIdFromUrl(){
-  const p = new URLSearchParams(window.location.search);
-  return p.get('guide');
-}
-function buildGuideUrl(guideId){
-  return `${APP_URL}?guide=${guideId}`;
-}
-
-// ══════════════════════════════════════
-// PAGES
-// ══════════════════════════════════════
-function showPage(name){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  window.scrollTo(0,0);
-  applyI18n();
-}
-
-function goBackToProfile(){
-  showPage('profile');
-  renderProfile();
-}
-
-// ══════════════════════════════════════
-// PROFILE
-// ══════════════════════════════════════
 async function renderProfile(){
   showPage('profile');
-  const guideId = getGuideIdFromUrl();
-  if(!guideId){
-    document.getElementById('profileContent').innerHTML = `
-      <div class="empty"><div class="ei">🧭</div><p>No guide selected.<br>Please use a guide link shared with you.</p></div>`;
-    return;
-  }
-  document.getElementById('profileContent').innerHTML = `<div class="loader"><div class="spinner"></div><span>Loading profile...</span></div>`;
-
-  const {data:guide, error:ge} = await sb.from('guides').select('*').eq('id',guideId).single();
-  if(ge||!guide){
-    document.getElementById('profileContent').innerHTML = `<div class="empty"><div class="ei">❌</div><p>Guide not found.</p></div>`;
-    return;
-  }
-  currentGuide = guide;
-
-  const {data:ratings} = await sb.from('ratings').select('*').eq('guide_id',guideId);
-  const all = ratings||[];
-  const pubReviews = all.filter(r=>r.published&&r.review);
-  const avgScore = all.length ? (all.reduce((s,r)=>s+avgR(r),0)/all.length) : null;
-
-  // criteria averages
-  const ca = {};
-  if(all.length){
-    CRITERIA.forEach(c=>{ ca[c] = all.reduce((s,r)=>s+(r['score_'+c]||0),0)/all.length; });
-  }
-
-  const photoHtml = guide.photo_url
-    ? `<div class="profile-photo"><img src="${guide.photo_url}" alt="${guide.name}"></div>`
-    : `<div class="profile-photo">👤</div>`;
-
-  const scoreHtml = avgScore !== null
-    ? `<div class="profile-score-pill"><span class="stars">${starsFor(avgScore)}</span> ${avgScore.toFixed(1)}/10 &nbsp;·&nbsp; ${all.length} ${tr('evaluations')}</div>`
-    : `<div class="profile-score-pill" style="background:rgba(90,122,159,.1);border-color:rgba(90,122,159,.2);color:var(--text3)">No ratings yet</div>`;
-
-  const criteriaHtml = all.length ? `
-    <div class="section-label">${tr('avg_criteria')}</div>
-    <div class="criteria-grid">
-      ${CRITERIA.map(c=>`
-        <div class="criteria-item">
-          <span class="criteria-name">${tr('c_'+c)}</span>
-          <span class="criteria-score">${(ca[c]||0).toFixed(1)}</span>
-        </div>`).join('')}
-    </div>` : '';
-
-  const reviewsHtml = pubReviews.length ? `
-    <div class="reviews-section">
-      <div class="section-label">${tr('published_reviews')}</div>
-      ${pubReviews.map(r=>`
-        <div class="review-card">
-          <div class="review-top">
-            <div>
-              <div class="review-author">${r.client_name}</div>
-              <div class="review-meta">${r.country||''} ${r.circuit_dates?'· '+r.circuit_dates:''}</div>
-            </div>
-            <span class="review-score-badge">${avgR(r).toFixed(1)}/10</span>
-          </div>
-          <div class="review-text">"${r.review}"</div>
-        </div>`).join('')}
-    </div>` : `<div style="color:var(--text3);font-size:13px;margin-bottom:24px">${tr('no_reviews')}</div>`;
-
-  document.getElementById('profileContent').innerHTML = `
-    <div class="profile-hero">
-      ${photoHtml}
-      <div class="profile-name">${guide.name}</div>
-      <div class="profile-specialty">${guide.specialty||''}</div>
-      ${scoreHtml}
-      <div class="profile-tel">📞 <a href="tel:${guide.tel}">${guide.tel||''}</a></div>
-    </div>
-    <div class="profile-body">
-      <div class="section-label">${tr('about')}</div>
-      <div class="bio-card">${guide.bio||''}</div>
-      ${criteriaHtml}
-      ${reviewsHtml}
-      <button class="btn-rate" onclick="openRateForm()">${tr('rate_guide')}</button>
-    </div>`;
+  const gid=getGuideId();
+  if(!gid){document.getElementById('profileContent').innerHTML='<div class="empty" style="padding:80px 20px"><div class="ei">🧭</div><p style="font-size:15px;color:var(--text2);margin-bottom:6px">Welcome to Morocco Guides</p><p style="font-size:13px">Please use a guide link shared with you,<br>or <button onclick="showPage(\'login\')" style="background:none;border:none;color:var(--accent2);cursor:pointer;font-family:inherit;font-size:inherit;text-decoration:underline">sign in as admin</button>.</p></div>';return;}
+  document.getElementById('profileContent').innerHTML='<div class="loader"><div class="spinner"></div><span>Loading...</span></div>';
+  const {data:g,error:ge}=await sb.from('guides').select('*').eq('id',gid).single();
+  if(ge||!g){document.getElementById('profileContent').innerHTML='<div class="empty"><div class="ei">❌</div><p>Guide not found.</p></div>';return;}
+  currentGuide=g;
+  const [{data:ratings},{data:photos}]=await Promise.all([
+    sb.from('ratings').select('*').eq('guide_id',gid).order('created_at',{ascending:false}),
+    sb.from('guide_photos').select('*').eq('guide_id',gid).order('sort_order',{ascending:true})
+  ]);
+  const all=ratings||[];
+  const pub=all.filter(r=>r.published&&r.review);
+  const avgScore=all.length?all.reduce((s,r)=>s+avgR(r),0)/all.length:null;
+  const ca={};
+  if(all.length) CRITERIA.forEach(c=>{ca[c]=all.reduce((s,r)=>s+(r['score_'+c]||0),0)/all.length;});
+  galleryPhotos=photos||[];
+  const socs=[];
+  if(g.show_instagram&&g.instagram) socs.push('<a href="'+g.instagram+'" target="_blank" class="soc-icon soc-ig">'+SVG_IG+'</a>');
+  if(g.show_facebook&&g.facebook) socs.push('<a href="'+g.facebook+'" target="_blank" class="soc-icon soc-fb">'+SVG_FB+'</a>');
+  if(g.show_whatsapp&&g.whatsapp) socs.push('<a href="https://wa.me/'+g.whatsapp.replace(/\D/g,'')+'" target="_blank" class="soc-icon soc-wa">'+SVG_WA+'</a>');
+  if(g.show_linkedin&&g.linkedin) socs.push('<a href="'+g.linkedin+'" target="_blank" class="soc-icon soc-li">'+SVG_LI+'</a>');
+  if(galleryPhotos.length) socs.push('<div class="soc-icon soc-gallery" onclick="openGallery(0)" title="Photo Gallery">'+SVG_GAL+'</div>');
+  const reviewsHtml=pub.length?pub.map(r=>'<div class="review-card"><div class="review-top"><div><div class="review-author">'+r.client_name+'</div><div class="review-meta">'+(r.country||'')+(r.circuit_dates?' · '+r.circuit_dates:'')+'</div></div><span class="review-badge">'+avgR(r).toFixed(1)+'/10</span></div><div class="review-text">"'+r.review+'"</div></div>').join(''):'<p style="color:var(--text3);font-size:13px;margin-bottom:20px">No reviews yet.</p>';
+  document.getElementById('profileContent').innerHTML=
+    '<div class="profile-hero">'+
+    '<div class="profile-photo">'+(g.photo_url?'<img src="'+g.photo_url+'" alt="'+g.name+'">':"👤")+'</div>'+
+    '<div class="profile-name">'+g.name+'</div>'+
+    '<div class="profile-specialty">'+(g.specialty||'')+'</div>'+
+    (avgScore!==null?'<div class="score-pill"><span class="stars">'+starsFor(avgScore)+'</span> '+avgScore.toFixed(1)+'/10 <span class="cnt">· '+all.length+' reviews</span></div>':'<div class="score-pill" style="background:rgba(90,122,159,.1);border-color:rgba(90,122,159,.2);color:var(--text3)">No ratings yet</div>')+
+    '<br>'+(g.tel?'<a href="tel:'+g.tel+'" class="phone-pill">📞 '+g.tel+'</a>':'')+
+    (socs.length?'<div class="social-row">'+socs.join('')+'</div>':'')+
+    '</div>'+
+    '<div class="profile-body">'+
+    '<div class="section-lbl">About</div>'+
+    '<div class="bio-card"><div class="bio-text collapsed" id="bioText">'+(g.bio||'')+'</div><button class="bio-toggle" id="bioToggle" onclick="toggleBio()">Show more ↓</button></div>'+
+    (all.length?'<div class="section-lbl">Average by Criteria</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">'+CRITERIA.map(c=>'<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--text2)">'+CL[c]+'</span><span style="font-size:13px;font-weight:600;color:var(--accent2)">'+(ca[c]||0).toFixed(1)+'</span></div>').join('')+'</div>':'')+
+    '<div class="section-lbl">Reviews</div>'+reviewsHtml+
+    '<button class="btn-rate" onclick="openRate()">Rate this guide</button>'+
+    '</div>';
+  checkBioOverflow();
 }
 
-// ══════════════════════════════════════
-// RATE FORM
-// ══════════════════════════════════════
-function openRateForm(){
-  scores={};
-  CRITERIA.forEach(c=>scores[c]=0);
-  renderRateForm();
-  showPage('rate');
+function checkBioOverflow(){
+  const bt=document.getElementById('bioText');
+  const tog=document.getElementById('bioToggle');
+  if(!bt||!tog)return;
+  bt.classList.add('collapsed');
+  if(bt.scrollHeight<=bt.clientHeight+2) tog.style.display='none';
+}
+function toggleBio(){
+  const bt=document.getElementById('bioText');
+  const tog=document.getElementById('bioToggle');
+  if(bt.classList.contains('collapsed')){bt.classList.remove('collapsed');tog.textContent='Show less ↑';}
+  else{bt.classList.add('collapsed');tog.textContent='Show more ↓';}
 }
 
+function openGallery(idx){
+  if(!galleryPhotos.length)return;
+  galleryIndex=idx;
+  renderGallery();
+  document.getElementById('galleryOverlay').style.display='block';
+  document.body.style.overflow='hidden';
+}
+function closeGallery(){document.getElementById('galleryOverlay').style.display='none';document.body.style.overflow='';}
+function renderGallery(){
+  const total=galleryPhotos.length;
+  const p=galleryPhotos[galleryIndex];
+  document.getElementById('galleryOverlay').innerHTML=
+    '<div class="gallery-overlay">'+
+    '<div class="gallery-header"><div class="gallery-title">'+(currentGuide?.name||'Gallery')+'</div><div style="display:flex;align-items:center;gap:10px"><span class="gallery-counter">'+(galleryIndex+1)+' / '+total+'</span><button class="gallery-close" onclick="closeGallery()">✕</button></div></div>'+
+    '<div class="gallery-stage" id="gStage" ontouchstart="touchStartX=event.touches[0].clientX" ontouchend="handleSwipe(event)">'+
+    (p?'<img class="gallery-img" src="'+p.url+'" alt="photo">':`<div class="gallery-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>No photo</span></div>`)+
+    (galleryIndex>0?'<button class="gallery-arrow prev" onclick="galNav(-1)">‹</button>':'')+
+    (galleryIndex<total-1?'<button class="gallery-arrow next" onclick="galNav(1)">›</button>':'')+
+    '</div>'+
+    '<div class="gallery-dots">'+galleryPhotos.map((_,i)=>'<div class="gdot '+(i===galleryIndex?'active':'')+'" onclick="galGoto('+i+')"></div>').join('')+'</div>'+
+    '</div>';
+}
+function galNav(d){galleryIndex=Math.max(0,Math.min(galleryPhotos.length-1,galleryIndex+d));renderGallery();}
+function galGoto(i){galleryIndex=i;renderGallery();}
+function handleSwipe(e){const dx=e.changedTouches[0].clientX-touchStartX;if(Math.abs(dx)>40) galNav(dx<0?1:-1);}
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('galleryOverlay').style.display==='block'){
+    if(e.key==='ArrowLeft') galNav(-1);
+    if(e.key==='ArrowRight') galNav(1);
+    if(e.key==='Escape') closeGallery();
+  }
+});
+
+function openRate(){scores={};CRITERIA.forEach(c=>scores[c]=0);renderRateForm();showPage('rate');}
 function renderRateForm(){
-  if(!currentGuide) return;
-  const g = currentGuide;
-  const photoHtml = g.photo_url
-    ? `<div class="form-guide-mini-photo"><img src="${g.photo_url}" alt="${g.name}"></div>`
-    : `<div class="form-guide-mini-photo">👤</div>`;
-
-  document.getElementById('rateFormContent').innerHTML = `
-    <div class="form-guide-banner">
-      ${photoHtml}
-      <div>
-        <div class="form-guide-mini-name">${g.name}</div>
-        <div class="form-guide-mini-spec">${g.specialty||''}</div>
-      </div>
-    </div>
-
-    <div class="field-card">
-      <div class="form-row">
-        <div>
-          <label class="field-label">${tr('your_name')}</label>
-          <input class="form-input" id="f_name" placeholder="John Smith">
-        </div>
-        <div>
-          <label class="field-label">${tr('country')}</label>
-          <input class="form-input" id="f_country" placeholder="France">
-        </div>
-      </div>
-    </div>
-
-    <div class="field-card">
-      <label class="field-label">${tr('circuit_dates')}</label>
-      <input class="form-input" id="f_dates" placeholder="15–22 April 2025">
-    </div>
-
-    ${CRITERIA.map(c=>`
-    <div class="criteria-card">
-      <div class="criteria-header">
-        <span class="criteria-title">${tr('c_'+c)}</span>
-        <div class="criteria-val empty" id="cv_${c}">—</div>
-      </div>
-      <div class="dots">
-        ${[1,2,3,4,5,6,7,8,9,10].map(n=>`<div class="dot" id="d_${c}_${n}" onclick="setScore('${c}',${n})">${n}</div>`).join('')}
-      </div>
-    </div>`).join('')}
-
-    <div class="field-card">
-      <label class="field-label">${tr('your_review')} <span class="opt">(${tr('optional')})</span></label>
-      <textarea class="form-textarea" id="f_review" placeholder="Share your experience..."></textarea>
-    </div>
-
-    <button class="btn-submit" onclick="submitRating()">${tr('submit')}</button>
-  `;
+  const g=currentGuide;if(!g)return;
+  document.getElementById('rateContent').innerHTML=
+    '<div class="form-guide-banner"><div class="form-mini-photo">'+(g.photo_url?'<img src="'+g.photo_url+'">':"👤")+'</div><div><div class="form-mini-name">'+g.name+'</div><div class="form-mini-spec">'+(g.specialty||'')+'</div></div></div>'+
+    '<div class="field-card"><div class="form-row"><div><label class="field-lbl">Your name</label><input class="form-input" id="f_name" placeholder="John Smith"></div><div><label class="field-lbl">Country</label><input class="form-input" id="f_country" placeholder="France"></div></div></div>'+
+    '<div class="field-card"><label class="field-lbl">Circuit dates</label><input class="form-input" id="f_dates" placeholder="15–22 April 2025"></div>'+
+    CRITERIA.map(c=>'<div class="criteria-card"><div class="criteria-hdr"><span class="criteria-lbl">'+CL[c]+'</span><div class="criteria-val empty" id="cv_'+c+'">—</div></div><div class="dots">'+[1,2,3,4,5,6,7,8,9,10].map(n=>'<div class="dot" id="d_'+c+'_'+n+'" onclick="setScore(\''+c+'\','+n+')">'+n+'</div>').join('')+'</div></div>').join('')+
+    '<div class="field-card"><label class="field-lbl">Your review <span class="opt">(optional)</span></label><textarea class="form-textarea" id="f_review" placeholder="Share your experience..."></textarea></div>'+
+    '<button class="btn-submit" onclick="submitRating()">Submit evaluation</button>';
 }
-
-function setScore(c, n){
+function setScore(c,n){
   scores[c]=n;
   const cv=document.getElementById('cv_'+c);
-  cv.textContent=n; cv.classList.remove('empty');
-  cv.style.transform='scale(1.25)'; setTimeout(()=>cv.style.transform='',180);
-  for(let i=1;i<=10;i++){
-    const d=document.getElementById(`d_${c}_${i}`);
-    if(!d)continue;
-    d.classList.toggle('lit', i<n);
-    d.classList.toggle('sel', i===n);
-  }
+  cv.textContent=n;cv.className='criteria-val set';
+  cv.style.transform='scale(1.2)';setTimeout(()=>cv.style.transform='',180);
+  for(let i=1;i<=10;i++){const d=document.getElementById('d_'+c+'_'+i);if(!d)continue;d.classList.toggle('lit',i<n);d.classList.toggle('sel',i===n);}
 }
-
 async function submitRating(){
-  const name = document.getElementById('f_name').value.trim();
-  if(!name){toast(tr('no_name'),'err');return;}
-  const missing = CRITERIA.filter(c=>!scores[c]);
-  if(missing.length){toast(tr('fill_all'),'err');return;}
-
-  const btn=document.querySelector('#rateFormContent .btn-submit');
-  btn.disabled=true; btn.textContent='Sending...';
-
-  const {error} = await sb.from('ratings').insert({
-    guide_id: currentGuide.id,
-    client_name: name,
-    country: document.getElementById('f_country').value.trim(),
-    circuit_dates: document.getElementById('f_dates').value.trim(),
-    review: document.getElementById('f_review').value.trim(),
-    score_attitude: scores.attitude,
-    score_knowledge: scores.knowledge,
-    score_helpfulness: scores.helpfulness,
-    score_punctuality: scores.punctuality,
-    score_flexibility: scores.flexibility,
-    score_presentation: scores.presentation,
-    score_other: scores.other,
-    published: false
+  const name=document.getElementById('f_name').value.trim();
+  if(!name){toast('Please enter your name','err');return;}
+  if(CRITERIA.some(c=>!scores[c])){toast('Please rate all criteria','err');return;}
+  const btn=document.querySelector('#rateContent .btn-submit');
+  btn.disabled=true;btn.textContent='Sending...';
+  const {error}=await sb.from('ratings').insert({
+    guide_id:currentGuide.id,client_name:name,
+    country:document.getElementById('f_country').value.trim(),
+    circuit_dates:document.getElementById('f_dates').value.trim(),
+    review:document.getElementById('f_review').value.trim(),
+    score_attitude:scores.attitude,score_knowledge:scores.knowledge,
+    score_helpfulness:scores.helpfulness,score_punctuality:scores.punctuality,
+    score_flexibility:scores.flexibility,score_presentation:scores.presentation,
+    score_other:scores.other,published:false
   });
-
-  if(error){ btn.disabled=false; btn.textContent=tr('submit'); toast('Error: '+error.message,'err'); return; }
+  if(error){btn.disabled=false;btn.textContent='Submit evaluation';toast('Error: '+error.message,'err');return;}
   showPage('success');
-  applyI18n();
 }
 
-// ══════════════════════════════════════
-// AUTH
-// ══════════════════════════════════════
 function doLogin(){
   const pw=document.getElementById('loginPw').value;
-  if(pw===ADMIN_PASS){
-    adminLoggedIn=true;
-    document.getElementById('loginPw').value='';
-    document.getElementById('loginErr').style.display='none';
-    document.getElementById('adminNavBtn').textContent='Admin ✓';
-    showPage('admin');
-    renderAdminTab();
-  } else {
-    document.getElementById('loginErr').style.display='block';
-  }
+  if(pw===ADMIN_PASS){adminIn=true;document.getElementById('loginPw').value='';document.getElementById('loginErr').style.display='none';document.getElementById('adminBtn').textContent='Admin ✓';showPage('admin');renderAdminTab();}
+  else document.getElementById('loginErr').style.display='block';
 }
-function logoutAdmin(){
-  adminLoggedIn=false;
-  document.getElementById('adminNavBtn').textContent='Admin';
-  goBackToProfile();
-}
-
-// ══════════════════════════════════════
-// ADMIN
-// ══════════════════════════════════════
-function switchTab(t){
-  currentTab=t;
-  ['top10','reviews','guides'].forEach(x=>{
-    document.getElementById('tab-'+x)?.classList.toggle('active',x===t);
-  });
-  renderAdminTab();
-}
-function renderAdminTab(){
-  if(!adminLoggedIn){showPage('login');return;}
-  if(currentTab==='top10') renderTop10();
-  if(currentTab==='reviews') renderAllReviews();
-  if(currentTab==='guides') renderManageGuides();
-}
+function logoutAdmin(){adminIn=false;document.getElementById('adminBtn').textContent='Admin';goBackToProfile();}
+function switchTab(t){currentTab=t;['top10','reviews','guides'].forEach(x=>document.getElementById('tab-'+x)?.classList.toggle('active',x===t));renderAdminTab();}
+function renderAdminTab(){if(!adminIn){showPage('login');return;}if(currentTab==='top10') renderTop10();else if(currentTab==='reviews') renderAllReviews();else renderManageGuides();}
 
 async function renderTop10(){
-  document.getElementById('adminContent').innerHTML=`<div class="loader"><div class="spinner"></div></div>`;
-  const {data:guides} = await sb.from('guides').select('*');
-  const {data:ratings} = await sb.from('ratings').select('*');
-  const all = ratings||[];
-  const ranked = (guides||[]).map(g=>{
-    const gr = all.filter(r=>r.guide_id===g.id);
-    const avg = gr.length ? gr.reduce((s,r)=>s+avgR(r),0)/gr.length : null;
-    return {g, avg, cnt:gr.length};
-  }).sort((a,b)=>(b.avg||0)-(a.avg||0)).slice(0,10);
-
-  document.getElementById('adminContent').innerHTML = `
-    <div class="tbl-wrap">
-    <table>
-      <thead><tr>
-        <th>Rank</th><th>Guide</th><th>Avg Score</th><th>Reviews</th><th>Share</th><th>Details</th>
-      </tr></thead>
-      <tbody>${ranked.map(({g,avg,cnt},i)=>`
-        <tr>
-          <td><div class="rank-num rank-${i+1}">${i<3?['🥇','🥈','🥉'][i]:(i+1)}</div></td>
-          <td><div class="guide-mini-row">
-            <div class="mini-photo">${g.photo_url?`<img src="${g.photo_url}">`:'👤'}</div>
-            <div><div class="mini-name">${g.name}</div><div class="mini-spec">${g.specialty||''}</div></div>
-          </div></td>
-          <td>${avg!==null?`<span class="score-pill ${i===0?'gold':''}">${avg.toFixed(2)}/10</span>`:'—'}</td>
-          <td>${cnt}</td>
-          <td><button class="share-btn" onclick="showShare('${g.id}','${g.name.replace(/'/g,"\\'")}')">🔗 Share</button></td>
-          <td><button class="btn-xs" onclick="showGuideDetail('${g.id}')">Details</button></td>
-        </tr>`).join('')}
-      </tbody>
-    </table></div>`;
+  document.getElementById('adminContent').innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  const [{data:guides},{data:ratings}]=await Promise.all([sb.from('guides').select('*'),sb.from('ratings').select('*')]);
+  const all=ratings||[];
+  const ranked=(guides||[]).map(g=>{const gr=all.filter(r=>r.guide_id===g.id);return{g,avg:gr.length?gr.reduce((s,r)=>s+avgR(r),0)/gr.length:null,cnt:gr.length};}).sort((a,b)=>(b.avg||0)-(a.avg||0)).slice(0,10);
+  document.getElementById('adminContent').innerHTML='<div class="tbl-wrap"><table><thead><tr><th>Rank</th><th>Guide</th><th>Avg Score</th><th>Reviews</th><th>Share</th><th></th></tr></thead><tbody>'+ranked.map(({g,avg,cnt},i)=>'<tr><td><div class="rank-num '+(i<3?'r'+(i+1):'')+'">'+(i<3?['🥇','🥈','🥉'][i]:(i+1))+'</div></td><td><div class="mini-row"><div class="mini-photo">'+(g.photo_url?'<img src="'+g.photo_url+'">':"👤")+'</div><div><div class="mini-name">'+g.name+'</div><div class="mini-spec">'+(g.specialty||'')+'</div></div></div></td><td>'+(avg!==null?'<span class="score-pill-sm '+(i===0?'score-pill-gold':'')+'">'+avg.toFixed(2)+'/10</span>':'—')+'</td><td>'+cnt+'</td><td><button class="share-btn" onclick="showShare(\''+g.id+'\',\''+g.name.replace(/'/g,"\\'")+'\')" >🔗 Share</button></td><td><button class="btn-xs" onclick="showGuideDetail(\''+g.id+'\')">Details</button></td></tr>').join('')+'</tbody></table></div>';
 }
 
 async function renderAllReviews(){
-  document.getElementById('adminContent').innerHTML=`<div class="loader"><div class="spinner"></div></div>`;
-  const {data:ratings} = await sb.from('ratings').select('*').order('created_at',{ascending:false});
-  const {data:guides} = await sb.from('guides').select('id,name');
-  const gMap = Object.fromEntries((guides||[]).map(g=>[g.id,g.name]));
-  const all = ratings||[];
-  if(!all.length){document.getElementById('adminContent').innerHTML=`<div class="empty"><div class="ei">📋</div><p>No reviews yet.</p></div>`;return;}
-
-  document.getElementById('adminContent').innerHTML = `
-    <div class="tbl-wrap">
-    <table>
-      <thead><tr>
-        <th>Guide</th><th>Client</th><th>Date</th><th>Score</th><th>Review</th><th>Published</th><th></th>
-      </tr></thead>
-      <tbody>${all.map(r=>`
-        <tr>
-          <td style="font-weight:600;color:var(--text)">${gMap[r.guide_id]||'—'}</td>
-          <td>${r.client_name}<br><span style="font-size:11px;color:var(--text3)">${r.country||''} ${r.circuit_dates?'· '+r.circuit_dates:''}</span></td>
-          <td style="font-size:12px;white-space:nowrap">${new Date(r.created_at).toLocaleDateString('en-GB')}</td>
-          <td><span class="score-pill">${avgR(r).toFixed(1)}/10</span></td>
-          <td style="max-width:180px;font-size:12px;color:var(--text2);font-style:italic">
-            ${r.review?`"${r.review.substring(0,55)}${r.review.length>55?'…':''}"`:
-            '<span style="color:var(--text3)">—</span>'}
-          </td>
-          <td>
-            ${r.review?`<div class="toggle-row">
-              <div class="toggle ${r.published?'on':''}" onclick="togglePublish('${r.id}',${r.published})"></div>
-              <span class="toggle-label">${r.published?'Yes':'No'}</span>
-            </div>`:'<span style="color:var(--text3);font-size:12px">—</span>'}
-          </td>
-          <td><button class="btn-xs" onclick="showReviewDetail('${r.id}')">View</button></td>
-        </tr>`).join('')}
-      </tbody>
-    </table></div>`;
+  document.getElementById('adminContent').innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  const [{data:ratings},{data:guides}]=await Promise.all([sb.from('ratings').select('*').order('created_at',{ascending:false}),sb.from('guides').select('id,name')]);
+  const gMap=Object.fromEntries((guides||[]).map(g=>[g.id,g.name]));
+  const all=ratings||[];
+  if(!all.length){document.getElementById('adminContent').innerHTML='<div class="empty"><div class="ei">📋</div><p>No reviews yet.</p></div>';return;}
+  document.getElementById('adminContent').innerHTML='<div class="tbl-wrap"><table><thead><tr><th>Guide</th><th>Client</th><th>Date</th><th>Score</th><th>Review</th><th>Published</th><th></th></tr></thead><tbody>'+all.map(r=>'<tr><td style="font-weight:600;color:var(--text)">'+(gMap[r.guide_id]||'—')+'</td><td>'+r.client_name+'<br><span style="font-size:10px;color:var(--text3)">'+(r.country||'')+' '+(r.circuit_dates?'· '+r.circuit_dates:'')+'</span></td><td style="font-size:11px;white-space:nowrap">'+new Date(r.created_at).toLocaleDateString('en-GB')+'</td><td><span class="score-pill-sm">'+avgR(r).toFixed(1)+'/10</span></td><td style="max-width:160px;font-size:11px;color:var(--text2);font-style:italic">'+(r.review?'"'+r.review.substring(0,50)+(r.review.length>50?'…':'')+'"':'<span style="color:var(--text3)">—</span>')+'</td><td>'+(r.review?'<div class="toggle-row"><div class="toggle '+(r.published?'on':'')+'" onclick="togglePub(\''+r.id+'\','+r.published+')"></div><span class="toggle-lbl">'+(r.published?'Yes':'No')+'</span></div>':'<span style="color:var(--text3);font-size:11px">—</span>')+'</td><td><button class="btn-xs" onclick="showReviewDetail(\''+r.id+'\')">View</button></td></tr>').join('')+'</tbody></table></div>';
 }
 
 async function renderManageGuides(){
-  document.getElementById('adminContent').innerHTML=`<div class="loader"><div class="spinner"></div></div>`;
-  const {data:guides} = await sb.from('guides').select('*').order('created_at',{ascending:true});
-  const {data:ratings} = await sb.from('ratings').select('guide_id');
-  const cntMap = {};
-  (ratings||[]).forEach(r=>{ cntMap[r.guide_id]=(cntMap[r.guide_id]||0)+1; });
-
-  document.getElementById('adminContent').innerHTML = `
-    <div style="margin-bottom:14px">
-      <button class="btn-xs primary" onclick="openGuideModal(null)">+ Add Guide</button>
-    </div>
-    <div class="tbl-wrap">
-    <table>
-      <thead><tr>
-        <th>Guide</th><th>Specialty</th><th>Phone</th><th>Reviews</th><th>Share</th><th>Actions</th>
-      </tr></thead>
-      <tbody>${(guides||[]).map(g=>`
-        <tr>
-          <td><div class="guide-mini-row">
-            <div class="mini-photo">${g.photo_url?`<img src="${g.photo_url}">`:'👤'}</div>
-            <div><div class="mini-name">${g.name}</div></div>
-          </div></td>
-          <td style="font-size:12px;color:var(--text2)">${g.specialty||'—'}</td>
-          <td style="font-size:12px;color:var(--text2)">${g.tel||'—'}</td>
-          <td>${cntMap[g.id]||0}</td>
-          <td><button class="share-btn" onclick="showShare('${g.id}','${g.name.replace(/'/g,"\\'")}')">🔗 Share</button></td>
-          <td><div style="display:flex;gap:6px;flex-wrap:wrap">
-            <button class="btn-xs" onclick="openGuideModal('${g.id}')">Edit</button>
-            <button class="btn-xs danger" onclick="deleteGuide('${g.id}')">Delete</button>
-          </div></td>
-        </tr>`).join('')}
-      </tbody>
-    </table></div>`;
+  document.getElementById('adminContent').innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  const [{data:guides},{data:ratings},{data:photos}]=await Promise.all([sb.from('guides').select('*').order('created_at',{ascending:true}),sb.from('ratings').select('guide_id'),sb.from('guide_photos').select('guide_id')]);
+  const cntMap={},pMap={};
+  (ratings||[]).forEach(r=>{cntMap[r.guide_id]=(cntMap[r.guide_id]||0)+1;});
+  (photos||[]).forEach(p=>{pMap[p.guide_id]=(pMap[p.guide_id]||0)+1;});
+  document.getElementById('adminContent').innerHTML='<div style="margin-bottom:12px"><button class="btn-xs primary" onclick="openGuideModal(null)">+ Add Guide</button></div><div class="tbl-wrap"><table><thead><tr><th>Guide</th><th>Specialty</th><th>Phone</th><th>Reviews</th><th>Photos</th><th>Share</th><th>Actions</th></tr></thead><tbody>'+(guides||[]).map(g=>'<tr><td><div class="mini-row"><div class="mini-photo">'+(g.photo_url?'<img src="'+g.photo_url+'">':"👤")+'</div><div class="mini-name">'+g.name+'</div></div></td><td style="font-size:11px;color:var(--text2)">'+(g.specialty||'—')+'</td><td style="font-size:11px;color:var(--text2)">'+(g.tel||'—')+'</td><td>'+(cntMap[g.id]||0)+'</td><td><button class="btn-xs green" onclick="openPhotosModal(\''+g.id+'\')">🖼 '+(pMap[g.id]||0)+' photos</button></td><td><button class="share-btn" onclick="showShare(\''+g.id+'\',\''+g.name.replace(/'/g,"\\'")+'\')">🔗 Share</button></td><td><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="btn-xs" onclick="openGuideModal(\''+g.id+'\')">Edit</button><button class="btn-xs danger" onclick="deleteGuide(\''+g.id+'\')">Delete</button></div></td></tr>').join('')+'</tbody></table></div>';
 }
 
-// ── Share modal
-function showShare(guideId, guideName){
-  const url = buildGuideUrl(guideId);
-  const waText = encodeURIComponent(`Hello! Here is the profile of your guide for your Morocco tour:\n${url}`);
-  const mailSubj = encodeURIComponent(`Your Morocco Guide — ${guideName}`);
-  const mailBody = encodeURIComponent(`Hello,\n\nHere is the profile of your guide for your Morocco tour:\n${url}\n\nBest regards,\nMorocco Guides Team`);
-
-  openModal('Share — '+guideName, `
-    <p style="font-size:14px;color:var(--text2);margin-bottom:12px">Send this link to your client:</p>
-    <div class="share-url">${url}</div>
-    <div class="share-actions">
-      <button class="share-action-btn sha-copy" onclick="copyLink('${url}')">📋 Copy link</button>
-      <a class="share-action-btn sha-wa" href="https://wa.me/?text=${waText}" target="_blank">💬 WhatsApp</a>
-      <a class="share-action-btn sha-mail" href="mailto:?subject=${mailSubj}&body=${mailBody}">✉️ Email</a>
-    </div>`, []);
-}
-
-async function copyLink(url){
-  await navigator.clipboard.writeText(url);
-  toast(tr('link_copied'),'ok');
-}
-
-// ── Guide detail
-async function showGuideDetail(guideId){
-  const {data:g} = await sb.from('guides').select('*').eq('id',guideId).single();
-  const {data:ratings} = await sb.from('ratings').select('*').eq('guide_id',guideId);
-  const all = ratings||[];
-  const ca={};
-  if(all.length) CRITERIA.forEach(c=>{ ca[c]=all.reduce((s,r)=>s+(r['score_'+c]||0),0)/all.length; });
-  const avg = all.length ? all.reduce((s,r)=>s+avgR(r),0)/all.length : null;
-
-  openModal(g.name, `
-    <div style="margin-bottom:14px">
-      ${avg!==null?`<span class="score-pill gold" style="font-size:14px">★ ${avg.toFixed(2)}/10</span> &nbsp;<span style="font-size:13px;color:var(--text3)">${all.length} evaluations</span>`:'No ratings yet'}
-    </div>
-    ${all.length?`
-    <div class="criteria-grid" style="margin-bottom:16px">
-      ${CRITERIA.map(c=>`<div class="criteria-item"><span class="criteria-name">${tr('c_'+c)}</span><span class="criteria-score">${(ca[c]||0).toFixed(1)}</span></div>`).join('')}
-    </div>
-    <div style="max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:8px">
-      ${all.map(r=>`<div style="background:var(--bg3);border-radius:8px;padding:10px 12px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-          <strong style="font-size:13px">${r.client_name}</strong>
-          <span class="score-pill" style="font-size:11px">${avgR(r).toFixed(1)}/10</span>
-        </div>
-        <div style="font-size:11px;color:var(--text3)">${r.circuit_dates||''} · ${r.country||''}</div>
-        ${r.review?`<div style="font-size:12px;color:var(--text2);font-style:italic;margin-top:6px">"${r.review}"</div>`:''}
-      </div>`).join('')}
-    </div>`:``}
-  `, [{label:'Close',cls:'btn-xs',fn:'closeModal()'}]);
-}
-
-// ── Review detail
-async function showReviewDetail(rId){
-  const {data:r} = await sb.from('ratings').select('*').eq('id',rId).single();
-  const {data:g} = await sb.from('guides').select('name').eq('id',r.guide_id).single();
-
-  openModal('Review Detail', `
-    <table style="width:100%;font-size:13px;border-collapse:collapse;margin-bottom:14px">
-      ${[['Guide',g?.name||'—'],['Client',r.client_name],['Country',r.country||'—'],['Dates',r.circuit_dates||'—'],['Submitted',new Date(r.created_at).toLocaleDateString('en-GB')]]
-        .map(([k,v])=>`<tr><td style="padding:5px 0;color:var(--text3);width:100px">${k}</td><td style="font-weight:500;color:var(--text)">${v}</td></tr>`).join('')}
-    </table>
-    <div class="criteria-grid" style="margin-bottom:14px">
-      ${CRITERIA.map(c=>`<div class="criteria-item"><span class="criteria-name">${tr('c_'+c)}</span><span class="criteria-score">${r['score_'+c]||0}/10</span></div>`).join('')}
-    </div>
-    ${r.review?`<div style="background:var(--bg3);border-radius:8px;padding:14px;font-style:italic;color:var(--text2);font-size:13px;line-height:1.7">"${r.review}"</div>`:''}
-    ${r.review?`<div class="toggle-row" style="margin-top:14px">
-      <span style="font-size:13px;color:var(--text2)">Published on profile:</span>
-      <div class="toggle ${r.published?'on':''}" id="modal-toggle" onclick="togglePublish('${r.id}',${r.published},true)"></div>
-      <span class="toggle-label" id="modal-toggle-label">${r.published?'Yes':'No'}</span>
-    </div>`:''}
-  `, [{label:'Close',cls:'btn-xs',fn:'closeModal()'}]);
-}
-
-async function togglePublish(rId, current, fromModal=false){
-  const newVal = !current;
-  await sb.from('ratings').update({published:newVal}).eq('id',rId);
-  toast(newVal?'✓ Review published':'Review hidden','ok');
-  if(fromModal){
-    const t=document.getElementById('modal-toggle');
-    const l=document.getElementById('modal-toggle-label');
-    if(t){t.classList.toggle('on',newVal);}
-    if(l){l.textContent=newVal?'Yes':'No';}
-  }
+async function togglePub(rId,current){
+  const nv=!current;
+  await sb.from('ratings').update({published:nv}).eq('id',rId);
+  toast(nv?'✓ Review published':'Review hidden','ok');
   if(currentTab==='reviews') renderAllReviews();
 }
 
-// ── Guide form
-let editGuideId=null;
-async function openGuideModal(guideId){
-  editGuideId=guideId; photoDataUrl='';
+async function showGuideDetail(gid){
+  const [{data:g},{data:ratings}]=await Promise.all([sb.from('guides').select('*').eq('id',gid).single(),sb.from('ratings').select('*').eq('guide_id',gid)]);
+  const all=ratings||[];
+  const ca={};if(all.length) CRITERIA.forEach(c=>{ca[c]=all.reduce((s,r)=>s+(r['score_'+c]||0),0)/all.length;});
+  const avg=all.length?all.reduce((s,r)=>s+avgR(r),0)/all.length:null;
+  openModal(g.name,'<div style="margin-bottom:12px">'+(avg!==null?'<span class="score-pill-sm score-pill-gold" style="font-size:13px">★ '+avg.toFixed(2)+'/10</span> <span style="font-size:12px;color:var(--text3)">'+all.length+' evaluations</span>':'No ratings yet')+'</div>'+(all.length?'<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px">'+CRITERIA.map(c=>'<div style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:8px 11px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:var(--text2)">'+CL[c]+'</span><span style="font-size:12px;font-weight:600;color:var(--accent2)">'+(ca[c]||0).toFixed(1)+'</span></div>').join('')+'</div><div style="max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:7px">'+all.map(r=>'<div style="background:var(--bg3);border-radius:8px;padding:10px 12px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><strong style="font-size:12px">'+r.client_name+'</strong><span class="score-pill-sm" style="font-size:10px">'+avgR(r).toFixed(1)+'/10</span></div><div style="font-size:10px;color:var(--text3)">'+(r.circuit_dates||'')+' · '+(r.country||'')+'</div>'+(r.review?'<div style="font-size:11px;color:var(--text2);font-style:italic;margin-top:5px">"'+r.review+'"</div>':'')+'</div>').join('')+'</div>':''),[{label:'Close',cls:'btn-xs',fn:'closeModal()'}]);
+}
+
+async function showReviewDetail(rId){
+  const {data:r}=await sb.from('ratings').select('*').eq('id',rId).single();
+  const {data:g}=await sb.from('guides').select('name').eq('id',r.guide_id).single();
+  openModal('Review Detail','<table style="width:100%;font-size:12px;border-collapse:collapse;margin-bottom:12px">'+[['Guide',g?.name||'—'],['Client',r.client_name],['Country',r.country||'—'],['Dates',r.circuit_dates||'—'],['Submitted',new Date(r.created_at).toLocaleDateString('en-GB')]].map(([k,v])=>'<tr><td style="padding:4px 0;color:var(--text3);width:90px">'+k+'</td><td style="font-weight:500;color:var(--text)">'+v+'</td></tr>').join('')+'</table><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px">'+CRITERIA.map(c=>'<div style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:7px 10px;display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--text2)">'+CL[c]+'</span><span style="font-size:12px;font-weight:600;color:var(--accent2)">'+(r['score_'+c]||0)+'/10</span></div>').join('')+'</div>'+(r.review?'<div style="background:var(--bg3);border-radius:8px;padding:12px;font-style:italic;color:var(--text2);font-size:12px;line-height:1.6">"'+r.review+'"</div>':'')+(r.review?'<div class="toggle-row" style="margin-top:12px"><span style="font-size:12px;color:var(--text2)">Published:</span><div class="toggle '+(r.published?'on':'')+'" id="mtog" onclick="togglePub(\''+r.id+'\','+r.published+');document.getElementById(\'mtog\').classList.toggle(\'on\');document.getElementById(\'mtog-lbl\').textContent=document.getElementById(\'mtog\').classList.contains(\'on\')?\'Yes\':\'No\'"></div><span class="toggle-lbl" id="mtog-lbl">'+(r.published?'Yes':'No')+'</span></div>':''),[{label:'Close',cls:'btn-xs',fn:'closeModal()'}]);
+}
+
+function showShare(gid,name){
+  const url=buildUrl(gid);
+  const waT=encodeURIComponent('Hello! Here is the profile of your Morocco guide:\n'+url);
+  const ms=encodeURIComponent('Your Morocco Guide — '+name);
+  const mb=encodeURIComponent('Hello,\n\nHere is the profile of your guide:\n'+url+'\n\nBest regards');
+  openModal('Share — '+name,'<p style="font-size:13px;color:var(--text2);margin-bottom:10px">Send this link to your client:</p><div class="share-url">'+url+'</div><div class="share-actions"><button class="sha-btn sha-copy" onclick="copyLink(\''+url+'\')">📋 Copy link</button><a class="sha-btn sha-wa" href="https://wa.me/?text='+waT+'" target="_blank">💬 WhatsApp</a><a class="sha-btn sha-mail" href="mailto:?subject='+ms+'&body='+mb+'">✉️ Email</a></div>',[]);
+}
+async function copyLink(url){await navigator.clipboard.writeText(url);toast('Link copied!','ok');}
+
+async function openGuideModal(gid){
+  editGuideId=gid;photoDataUrl='';
   let g=null;
-  if(guideId){
-    const {data}=await sb.from('guides').select('*').eq('id',guideId).single();
-    g=data;
-  }
-  openModal(g?'Edit Guide':'Add Guide',`
-    <div class="form-grid">
-      <div class="full" style="text-align:center">
-        <div class="photo-upload-area" onclick="document.getElementById('photoFile').click()">
-          <div class="photo-preview-circle" id="photoPreview">
-            ${g?.photo_url?`<img src="${g.photo_url}">`:'📷'}
-          </div>
-          <div style="font-size:12px;color:var(--text3)">Click to upload photo</div>
-        </div>
-        <input type="file" id="photoFile" accept="image/*" style="display:none" onchange="handlePhoto(event)">
-      </div>
-      <div>
-        <label class="modal-label">Name *</label>
-        <input class="form-input" id="gName" value="${g?.name||''}">
-      </div>
-      <div>
-        <label class="modal-label">Specialty</label>
-        <input class="form-input" id="gSpec" value="${g?.specialty||''}">
-      </div>
-      <div>
-        <label class="modal-label">Phone</label>
-        <input class="form-input" id="gTel" value="${g?.tel||''}">
-      </div>
-      <div></div>
-      <div class="full">
-        <label class="modal-label">Bio</label>
-        <textarea class="form-textarea" id="gBio" style="min-height:90px">${g?.bio||''}</textarea>
-      </div>
-    </div>`,
-    [{label:'Cancel',cls:'btn-xs',fn:'closeModal()'},
-     {label:g?'Save Changes':'Add Guide',cls:'btn-xs primary',fn:'saveGuide()'}]);
+  if(gid){const{data}=await sb.from('guides').select('*').eq('id',gid).single();g=data;}
+  openModal(g?'Edit Guide':'Add Guide',
+    '<div class="form-grid">'+
+    '<div class="full" style="text-align:center"><div class="photo-upload" onclick="document.getElementById(\'pFile\').click()"><div class="photo-circle" id="pPreview">'+(g?.photo_url?'<img src="'+g.photo_url+'">':"📷")+'</div><div class="photo-upload-hint">Tap to upload profile photo</div></div><input type="file" id="pFile" accept="image/*" style="display:none" onchange="handlePhoto(event)"></div>'+
+    '<div><label class="modal-lbl">Name *</label><input class="form-input" id="gName" value="'+(g?.name||'')+'"></div>'+
+    '<div><label class="modal-lbl">Specialty</label><input class="form-input" id="gSpec" value="'+(g?.specialty||'')+'"></div>'+
+    '<div><label class="modal-lbl">Phone</label><input class="form-input" id="gTel" value="'+(g?.tel||'')+'"></div>'+
+    '<div></div>'+
+    '<div class="full"><label class="modal-lbl">Bio</label><textarea class="form-textarea" id="gBio" style="min-height:80px">'+(g?.bio||'')+'</textarea></div>'+
+    '<div class="full"><label class="modal-lbl" style="margin-bottom:10px">Social Networks</label><div class="social-fields">'+
+    '<div class="social-field"><div class="social-field-top"><div class="social-dot" style="background:linear-gradient(45deg,#f09433,#bc1888)"></div><span class="social-lbl">Instagram</span></div><input class="form-input" id="gIg" placeholder="https://instagram.com/..." value="'+(g?.instagram||'')+'" style="margin-bottom:6px"><label class="social-check"><input type="checkbox" id="gIgShow" '+(g?.show_instagram?'checked':'')+'>Show on profile</label></div>'+
+    '<div class="social-field"><div class="social-field-top"><div class="social-dot" style="background:#1877F2"></div><span class="social-lbl">Facebook</span></div><input class="form-input" id="gFb" placeholder="https://facebook.com/..." value="'+(g?.facebook||'')+'" style="margin-bottom:6px"><label class="social-check"><input type="checkbox" id="gFbShow" '+(g?.show_facebook?'checked':'')+'>Show on profile</label></div>'+
+    '<div class="social-field"><div class="social-field-top"><div class="social-dot" style="background:#25D366"></div><span class="social-lbl">WhatsApp</span></div><input class="form-input" id="gWa" placeholder="+212 6..." value="'+(g?.whatsapp||'')+'" style="margin-bottom:6px"><label class="social-check"><input type="checkbox" id="gWaShow" '+(g?.show_whatsapp?'checked':'')+'>Show on profile</label></div>'+
+    '<div class="social-field"><div class="social-field-top"><div class="social-dot" style="background:#0A66C2"></div><span class="social-lbl">LinkedIn</span></div><input class="form-input" id="gLi" placeholder="https://linkedin.com/..." value="'+(g?.linkedin||'')+'" style="margin-bottom:6px"><label class="social-check"><input type="checkbox" id="gLiShow" '+(g?.show_linkedin?'checked':'')+'>Show on profile</label></div>'+
+    '</div></div></div>',
+    [{label:'Cancel',cls:'btn-xs',fn:'closeModal()'},{label:g?'Save Changes':'Add Guide',cls:'btn-xs primary',fn:'saveGuide()'}]);
 }
 
 function handlePhoto(e){
-  const file=e.target.files[0]; if(!file)return;
+  const file=e.target.files[0];if(!file)return;
+  if(file.size>2*1024*1024){toast('Photo must be under 2MB','err');return;}
   const reader=new FileReader();
-  reader.onload=ev=>{
-    photoDataUrl=ev.target.result;
-    const p=document.getElementById('photoPreview');
-    p.innerHTML=`<img src="${photoDataUrl}">`;
-  };
+  reader.onload=ev=>{photoDataUrl=ev.target.result;document.getElementById('pPreview').innerHTML='<img src="'+photoDataUrl+'">';};
   reader.readAsDataURL(file);
 }
 
 async function saveGuide(){
   const name=document.getElementById('gName').value.trim();
   if(!name){toast('Name is required','err');return;}
-  const spec=document.getElementById('gSpec').value.trim();
-  const tel=document.getElementById('gTel').value.trim();
-  const bio=document.getElementById('gBio').value.trim();
-
-  let photo_url = editGuideId
-    ? (await sb.from('guides').select('photo_url').eq('id',editGuideId).single()).data?.photo_url||''
-    : '';
+  let photo_url='';
+  if(editGuideId){const{data}=await sb.from('guides').select('photo_url').eq('id',editGuideId).single();photo_url=data?.photo_url||'';}
   if(photoDataUrl) photo_url=photoDataUrl;
+  const payload={name,specialty:document.getElementById('gSpec').value.trim(),tel:document.getElementById('gTel').value.trim(),bio:document.getElementById('gBio').value.trim(),photo_url,instagram:document.getElementById('gIg').value.trim(),facebook:document.getElementById('gFb').value.trim(),whatsapp:document.getElementById('gWa').value.trim(),linkedin:document.getElementById('gLi').value.trim(),show_instagram:document.getElementById('gIgShow').checked,show_facebook:document.getElementById('gFbShow').checked,show_whatsapp:document.getElementById('gWaShow').checked,show_linkedin:document.getElementById('gLiShow').checked};
+  if(editGuideId){await sb.from('guides').update(payload).eq('id',editGuideId);toast('Guide updated ✓','ok');}
+  else{await sb.from('guides').insert(payload);toast('Guide added ✓','ok');}
+  closeModal();renderManageGuides();
+}
 
-  if(editGuideId){
-    await sb.from('guides').update({name,specialty:spec,tel,bio,photo_url}).eq('id',editGuideId);
-    toast('Guide updated ✓','ok');
-  } else {
-    await sb.from('guides').insert({name,specialty:spec,tel,bio,photo_url});
-    toast('Guide added ✓','ok');
+async function deleteGuide(gid){
+  if(!confirm('Delete this guide and all their ratings?'))return;
+  await Promise.all([sb.from('ratings').delete().eq('guide_id',gid),sb.from('guide_photos').delete().eq('guide_id',gid),sb.from('guides').delete().eq('id',gid)]);
+  toast('Guide deleted','ok');renderManageGuides();
+}
+
+async function openPhotosModal(gid){
+  const{data:photos}=await sb.from('guide_photos').select('*').eq('guide_id',gid).order('sort_order',{ascending:true});
+  const arr=photos||[];
+  const{data:guide}=await sb.from('guides').select('name').eq('id',gid).single();
+  openModal('Photos — '+(guide?.name||''),
+    '<p style="font-size:12px;color:var(--text3);margin-bottom:12px">Max 10 photos · JPG/WebP/PNG · 2MB max each</p>'+
+    '<div class="photos-grid" id="photosGrid">'+
+    arr.map(p=>'<div class="photo-thumb"><img src="'+p.url+'" alt="photo"><button class="photo-thumb-del" onclick="deletePhoto(\''+p.id+'\',\''+gid+'\')">✕</button></div>').join('')+
+    (arr.length<10?'<div class="photo-add" onclick="document.getElementById(\'pUpInput\').click()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Add</span></div>':'')+
+    '</div><input type="file" id="pUpInput" accept="image/jpeg,image/webp,image/png" multiple style="display:none" onchange="uploadPhotos(event,\''+gid+'\','+arr.length+')">'
+  ,[{label:'Done',cls:'btn-xs primary',fn:'closeModal();renderManageGuides()'}]);
+}
+
+async function uploadPhotos(e,gid,current){
+  const files=Array.from(e.target.files).slice(0,10-current);
+  for(let i=0;i<files.length;i++){
+    const file=files[i];
+    if(file.size>2*1024*1024){toast(file.name+' over 2MB — skipped','err');continue;}
+    await new Promise(res=>{
+      const reader=new FileReader();
+      reader.onload=async ev=>{await sb.from('guide_photos').insert({guide_id:gid,url:ev.target.result,sort_order:current+i});res();};
+      reader.readAsDataURL(file);
+    });
   }
-  closeModal();
-  renderManageGuides();
+  toast(files.length+' photo(s) added ✓','ok');
+  openPhotosModal(gid);
 }
+async function deletePhoto(pid,gid){if(!confirm('Delete this photo?'))return;await sb.from('guide_photos').delete().eq('id',pid);toast('Photo deleted','ok');openPhotosModal(gid);}
 
-async function deleteGuide(guideId){
-  if(!confirm('Delete this guide? All their ratings will also be deleted.'))return;
-  await sb.from('ratings').delete().eq('guide_id',guideId);
-  await sb.from('guides').delete().eq('id',guideId);
-  toast('Guide deleted','ok');
-  renderManageGuides();
-}
-
-// ══════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════
-function avgR(r){ return CRITERIA.reduce((s,c)=>s+(r['score_'+c]||0),0)/CRITERIA.length; }
-function starsFor(s){ const n=Math.round(s/2); return '★'.repeat(n)+'☆'.repeat(5-n); }
-
-function openModal(title, body, buttons){
+function openModal(title,body,buttons){
   document.getElementById('modalTitle').textContent=title;
   document.getElementById('modalBody').innerHTML=body;
-  document.getElementById('modalFooter').innerHTML=(buttons||[]).map(b=>`<button class="${b.cls}" onclick="${b.fn}">${b.label}</button>`).join('');
+  document.getElementById('modalFooter').innerHTML=(buttons||[]).map(b=>'<button class="'+b.cls+'" onclick="'+b.fn+'">'+b.label+'</button>').join('');
   document.getElementById('modal').style.display='flex';
 }
-function closeModal(){ document.getElementById('modal').style.display='none'; }
+function closeModal(){document.getElementById('modal').style.display='none';}
 
-let toastTimer;
-function toast(msg, type='ok'){
-  const el=document.getElementById('toast');
-  document.getElementById('toastMsg').textContent=msg;
-  document.getElementById('toastIcon').textContent=type==='ok'?'✓':'✕';
-  el.className='toast '+type+' show';
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>el.classList.remove('show'),3000);
-}
-
-// ══════════════════════════════════════
-// INIT
-// ══════════════════════════════════════
-initLangButtons();
-const guideId = getGuideIdFromUrl();
-if(guideId){
-  renderProfile();
-} else {
-  document.getElementById('profileContent').innerHTML = `
-    <div class="empty" style="padding:80px 24px">
-      <div class="ei">🧭</div>
-      <p style="font-size:16px;color:var(--text2);margin-bottom:8px">Welcome to Morocco Guides</p>
-      <p>Please use a guide link shared with you,<br>or <button onclick="showPage('login')" style="background:none;border:none;color:var(--accent2);cursor:pointer;font-family:inherit;font-size:inherit;text-decoration:underline">sign in as admin</button> to manage guides.</p>
-    </div>`;
-}
+const gid=getGuideId();
+if(gid) renderProfile();
+else document.getElementById('profileContent').innerHTML='<div class="empty" style="padding:80px 20px"><div class="ei">🧭</div><p style="font-size:15px;color:var(--text2);margin-bottom:6px">Welcome to Morocco Guides</p><p style="font-size:13px">Please use a guide link,<br>or <button onclick="showPage(\'login\')" style="background:none;border:none;color:var(--accent2);cursor:pointer;font-family:inherit;font-size:inherit;text-decoration:underline">sign in as admin</button>.</p></div>';
 </script>
 </body>
 </html>
