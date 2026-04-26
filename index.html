@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Morocco Guides</title>
+<meta name="theme-color" content="#080F1E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VMT Guides">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" id="pwa-manifest">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -178,6 +184,11 @@ tbody tr:hover td{background:rgba(255,255,255,.015)}
 .toast{position:fixed;bottom:20px;right:16px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 16px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.4);transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;display:flex;align-items:center;gap:7px}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.ok .ti{color:var(--success)}.toast.err .ti{color:var(--danger)}
+
+@media(max-width:640px){.admin-wrap{padding:14px 8px}.tbl-wrap{border-radius:8px}table{font-size:11px}thead th{padding:7px 5px;font-size:9px}tbody td{padding:8px 5px}.mini-name{font-size:11px}.mini-spec{font-size:9px}.mini-photo{width:26px;height:26px;font-size:11px}.mini-row{gap:5px}.score-pill-sm{font-size:10px;padding:2px 5px}.btn-xs{padding:3px 6px;font-size:10px}.rank-num{width:20px;height:20px;font-size:10px}.tabs{gap:3px}.tab{padding:5px 9px;font-size:11px}.admin-title{font-size:18px}}
+@media(max-width:480px){.profile-hero{padding:22px 12px 18px}.profile-body{padding:14px 10px}.bio-card{font-size:12px;padding:12px}.review-card{padding:12px}.criteria-card{padding:11px 13px}.dots{gap:3px}.dot{width:24px;height:24px;font-size:10px}}
+.hide-mob{display:table-cell}
+@media(max-width:640px){.hide-mob{display:none}}
 </style>
 </head>
 <body>
@@ -276,6 +287,7 @@ const SVG_IG='<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path
 const SVG_FB='<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>';
 const SVG_WA='<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
 const SVG_LI='<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>';
+const SVG_STAR='<svg width="16" height="16" viewBox="0 0 24 24" fill="#F0B429"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
 const SVG_GAL='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="white" stroke="none"/><path d="M21 15l-5-5L5 21"/></svg>';
 
 async function renderProfile(){
@@ -302,13 +314,14 @@ async function renderProfile(){
   if(g.show_whatsapp&&g.whatsapp) socs.push('<a href="https://wa.me/'+g.whatsapp.replace(/\D/g,'')+'" target="_blank" class="soc-icon soc-wa">'+SVG_WA+'</a>');
   if(g.show_linkedin&&g.linkedin) socs.push('<a href="'+g.linkedin+'" target="_blank" class="soc-icon soc-li">'+SVG_LI+'</a>');
   if(galleryPhotos.length) socs.push('<div class="soc-icon soc-gallery" onclick="openGallery(0)" title="Photo Gallery">'+SVG_GAL+'</div>');
+  socs.push('<div class="soc-icon" onclick="document.getElementById(\'rev-section\').scrollIntoView({behavior:\'smooth\'})" style="background:rgba(59,130,246,0.18);border:1.5px solid var(--accent);position:relative">'+SVG_STAR+'<span style="position:absolute;top:-5px;right:-5px;background:var(--accent);color:white;font-size:9px;font-weight:700;border-radius:10px;padding:1px 4px;min-width:16px;text-align:center">'+pub.length+'</span></div>');
   const reviewsHtml=pub.length?pub.map(r=>'<div class="review-card"><div class="review-top"><div><div class="review-author">'+r.client_name+'</div><div class="review-meta">'+(r.country||'')+(r.circuit_dates?' · '+r.circuit_dates:'')+'</div></div><span class="review-badge">'+avgR(r).toFixed(1)+'/10</span></div><div class="review-text">"'+r.review+'"</div></div>').join(''):'<p style="color:var(--text3);font-size:13px;margin-bottom:20px">No reviews yet.</p>';
   document.getElementById('profileContent').innerHTML=
     '<div class="profile-hero">'+
     '<div class="profile-photo">'+(g.photo_url?'<img src="'+g.photo_url+'" alt="'+g.name+'">':"👤")+'</div>'+
     '<div class="profile-name">'+g.name+'</div>'+
     '<div class="profile-specialty">'+(g.specialty||'')+'</div>'+
-    (avgScore!==null?'<div class="score-pill"><span class="stars">'+starsFor(avgScore)+'</span> '+avgScore.toFixed(1)+'/10 <span class="cnt">· '+all.length+' reviews</span></div>':'<div class="score-pill" style="background:rgba(90,122,159,.1);border-color:rgba(90,122,159,.2);color:var(--text3)">No ratings yet</div>')+
+
     '<br>'+(g.tel?'<a href="tel:'+g.tel+'" class="phone-pill">📞 '+g.tel+'</a>':'')+
     (socs.length?'<div class="social-row">'+socs.join('')+'</div>':'')+
     '</div>'+
@@ -316,7 +329,8 @@ async function renderProfile(){
     '<div class="section-lbl">About</div>'+
     '<div class="bio-card"><div class="bio-text collapsed" id="bioText">'+(g.bio||'')+'</div><button class="bio-toggle" id="bioToggle" onclick="toggleBio()">Show more ↓</button></div>'+
     (all.length?'<div class="section-lbl">Average by Criteria</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">'+CRITERIA.map(c=>'<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--text2)">'+CL[c]+'</span><span style="font-size:13px;font-weight:600;color:var(--accent2)">'+(ca[c]||0).toFixed(1)+'</span></div>').join('')+'</div>':'')+
-    '<div class="section-lbl">Reviews</div>'+reviewsHtml+
+    (avgScore!==null?'<div class="section-lbl">Overall Rating</div><div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:13px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px"><span style="font-size:22px;font-weight:700;color:var(--accent2)">'+avgScore.toFixed(1)+'<span style="font-size:12px;color:var(--text3)">/10</span></span><span style="color:var(--gold);font-size:15px;letter-spacing:2px">'+starsFor(avgScore)+'</span><span style="font-size:12px;color:var(--text3)">'+all.length+' evaluations</span></div>':'')+
+    '<div class="section-lbl" id="rev-section">Reviews</div>'+reviewsHtml+
     '<button class="btn-rate" onclick="openRate()">Rate this guide</button>'+
     '</div>';
   checkBioOverflow();
@@ -443,7 +457,7 @@ async function renderRankings(){
   const [{data:guides},{data:ratings}]=await Promise.all([sb.from('guides').select('*'),sb.from('ratings').select('*')]);
   const all=ratings||[];
   const ranked=(guides||[]).map(g=>{const gr=all.filter(r=>r.guide_id===g.id);return{g,avg:gr.length?gr.reduce((s,r)=>s+avgR(r),0)/gr.length:null,cnt:gr.length};}).sort((a,b)=>(b.avg||0)-(a.avg||0));
-  document.getElementById('adminContent').innerHTML='<div class="tbl-wrap"><table><thead><tr><th>Rank</th><th>Guide</th><th>Avg Score</th><th>Reviews</th><th>Share</th><th></th></tr></thead><tbody>'+ranked.map(({g,avg,cnt},i)=>'<tr><td><div class="rank-num '+(i<3?'r'+(i+1):'')+'">'+(i<3?['🥇','🥈','🥉'][i]:(i+1))+'</div></td><td><div class="mini-row"><div class="mini-photo">'+(g.photo_url?'<img src="'+g.photo_url+'">':"👤")+'</div><div><div class="mini-name">'+g.name+'</div><div class="mini-spec">'+(g.specialty||'')+'</div></div></div></td><td>'+(avg!==null?'<span class="score-pill-sm '+(i===0?'score-pill-gold':'')+'">'+avg.toFixed(2)+'/10</span>':'—')+'</td><td>'+cnt+'</td><td><button class="share-btn" onclick="showShare(\''+g.id+'\',\''+g.name.replace(/'/g,"\\'")+'\')" >🔗 Share</button></td><td><button class="btn-xs" onclick="showGuideDetail(\''+g.id+'\')">Details</button></td></tr>').join('')+'</tbody></table></div>';
+  document.getElementById('adminContent').innerHTML='<div class="tbl-wrap"><table><thead><tr><th style="width:32px">Rank</th><th>Guide</th><th>Score</th><th class="hide-mob">Reviews</th><th>Share</th><th></th></tr></thead><tbody>'+ranked.map(({g,avg,cnt},i)=>'<tr><td><div class="rank-num '+(i<3?'r'+(i+1):'')+'">'+(i<3?['🥇','🥈','🥉'][i]:(i+1))+'</div></td><td><div class="mini-row"><div class="mini-photo">'+(g.photo_url?'<img src="'+g.photo_url+'">':"👤")+'</div><div><div class="mini-name">'+g.name+'</div><div class="mini-spec">'+(g.specialty||'')+'</div></div></div></td><td>'+(avg!==null?'<span class="score-pill-sm '+(i===0?'score-pill-gold':'')+'">'+avg.toFixed(2)+'/10</span>':'—')+'</td><td>'+cnt+'</td><td><button class="share-btn" onclick="showShare(\''+g.id+'\',\''+g.name.replace(/'/g,"\\'")+'\')" >🔗 Share</button></td><td><button class="btn-xs" onclick="showGuideDetail(\''+g.id+'\')">Details</button></td></tr>').join('')+'</tbody></table></div>';
 }
 
 async function renderAllReviews(){
@@ -461,7 +475,7 @@ async function renderManageGuides(){
   const cntMap={},pMap={};
   (ratings||[]).forEach(r=>{cntMap[r.guide_id]=(cntMap[r.guide_id]||0)+1;});
   (photos||[]).forEach(p=>{pMap[p.guide_id]=(pMap[p.guide_id]||0)+1;});
-  document.getElementById('adminContent').innerHTML='<div style="margin-bottom:12px"><button class="btn-xs primary" onclick="openGuideModal(null)">+ Add Guide</button></div><div class="tbl-wrap"><table><thead><tr><th>Guide</th><th>Specialty</th><th>Phone</th><th>Reviews</th><th>Photos</th><th>Share</th><th>Actions</th></tr></thead><tbody>'+(guides||[]).map(g=>'<tr><td><div class="mini-row"><div class="mini-photo">'+(g.photo_url?'<img src="'+g.photo_url+'">':"👤")+'</div><div class="mini-name">'+g.name+'</div></div></td><td style="font-size:11px;color:var(--text2)">'+(g.specialty||'—')+'</td><td style="font-size:11px;color:var(--text2)">'+(g.tel||'—')+'</td><td>'+(cntMap[g.id]||0)+'</td><td><button class="btn-xs green" onclick="openPhotosModal(\''+g.id+'\')">🖼 '+(pMap[g.id]||0)+' photos</button></td><td><button class="share-btn" onclick="showShare(\''+g.id+'\',\''+g.name.replace(/'/g,"\\'")+'\')">🔗 Share</button></td><td><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="btn-xs" onclick="openGuideModal(\''+g.id+'\')">Edit</button><button class="btn-xs danger" onclick="deleteGuide(\''+g.id+'\')">Delete</button></div></td></tr>').join('')+'</tbody></table></div>';
+  document.getElementById('adminContent').innerHTML='<div style="margin-bottom:12px"><button class="btn-xs primary" onclick="openGuideModal(null)">+ Add Guide</button></div><div class="tbl-wrap"><table><thead><tr><th>Guide</th><th class="hide-mob">Specialty</th><th class="hide-mob">Phone</th><th class="hide-mob">Reviews</th><th>Photos</th><th>Share</th><th>Actions</th></tr></thead><tbody>'+(guides||[]).map(g=>'<tr><td><div class="mini-row"><div class="mini-photo">'+(g.photo_url?'<img src="'+g.photo_url+'">':"👤")+'</div><div class="mini-name">'+g.name+'</div></div></td><td class="hide-mob" style="font-size:11px;color:var(--text2)">'+(g.specialty||'—')+'</td><td class="hide-mob" style="font-size:11px;color:var(--text2)">'+(g.tel||'—')+'</td><td>'+(cntMap[g.id]||0)+'</td><td><button class="btn-xs green" onclick="openPhotosModal(\''+g.id+'\')">🖼 '+(pMap[g.id]||0)+'</button></td><td><button class="share-btn" onclick="showShare(\''+g.id+'\',\''+g.name.replace(/'/g,"\\'")+'\')">🔗 Share</button></td><td><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="btn-xs" onclick="openGuideModal(\''+g.id+'\')">Edit</button><button class="btn-xs danger" onclick="deleteGuide(\''+g.id+'\')">Del</button></div></td></tr>').join('')+'</tbody></table></div>';
 }
 
 async function togglePub(rId,current){
@@ -581,6 +595,44 @@ function closeModal(){document.getElementById('modal').style.display='none';}
 const gid=getGuideId();
 if(gid) renderProfile();
 else document.getElementById('profileContent').innerHTML='<div class="empty" style="padding:80px 20px"><div class="ei">🧭</div><p style="font-size:15px;color:var(--text2);margin-bottom:6px">Welcome to Morocco Guides</p><p style="font-size:13px">Please use a guide link,<br>or <button onclick="showPage(\'login\')" style="background:none;border:none;color:var(--accent2);cursor:pointer;font-family:inherit;font-size:inherit;text-decoration:underline">sign in as admin</button>.</p></div>';
+</script>
+
+<script>
+(function(){
+  try{
+    var m=JSON.stringify({name:"Visit Morocco Guides",short_name:"VMT Guides",start_url:"/",display:"standalone",background_color:"#080F1E",theme_color:"#080F1E",icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23080F1E' rx='20'/%3E%3Ctext y='.9em' font-size='80'%3E%F0%9F%A7%AD%3C/text%3E%3C/svg%3E",sizes:"192x192",type:"image/svg+xml"}]});
+    var b=new Blob([m],{type:'application/json'});
+    var el=document.getElementById('pwa-manifest');
+    if(el) el.setAttribute('href',URL.createObjectURL(b));
+  }catch(e){}
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',function(){
+      try{
+        var sw="self.addEventListener('install',function(e){self.skipWaiting();});self.addEventListener('activate',function(e){e.waitUntil(clients.claim());});self.addEventListener('fetch',function(e){e.respondWith(fetch(e.request).catch(function(){return new Response('Offline');}));});";
+        navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(function(){});
+      }catch(e){}
+    });
+  }
+  if(/iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase())&&!window.navigator.standalone&&!localStorage.getItem('pwa-ok')){
+    setTimeout(function(){
+      try{
+        var d=document.createElement('div');
+        d.style.cssText='position:fixed;bottom:0;left:0;right:0;background:#112240;border-top:1px solid #2A4A72;padding:12px 16px;z-index:9999;display:flex;align-items:center;gap:10px;font-family:Outfit,sans-serif;box-shadow:0 -4px 20px rgba(0,0,0,.4)';
+        var icon=document.createElement('span');icon.style.fontSize='20px';icon.textContent='📲';
+        var txt=document.createElement('div');txt.style.flex='1';
+        var t1=document.createElement('div');t1.style.cssText='color:#EEF2FF;font-size:13px;font-weight:600';t1.textContent='Install this app';
+        var t2=document.createElement('div');t2.style.cssText='color:#8BA3C7;font-size:11px';t2.innerHTML='Tap <b>Share</b> then <b>Add to Home Screen</b>';
+        txt.appendChild(t1);txt.appendChild(t2);
+        var btn=document.createElement('button');
+        btn.style.cssText='background:none;border:none;color:#5A7A9F;font-size:18px;cursor:pointer;padding:4px';
+        btn.textContent='X';
+        btn.onclick=function(){d.remove();localStorage.setItem('pwa-ok',1);};
+        d.appendChild(icon);d.appendChild(txt);d.appendChild(btn);
+        document.body.appendChild(d);
+      }catch(e){}
+    },2500);
+  }
+})();
 </script>
 </body>
 </html>
