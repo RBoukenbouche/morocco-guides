@@ -531,10 +531,11 @@ async function openGuideModal(gid){
 
 function handlePhoto(e){
   const file=e.target.files[0];if(!file)return;
-  if(file.size>2*1024*1024){toast('Photo must be under 2MB','err');return;}
-  const reader=new FileReader();
-  reader.onload=ev=>{photoDataUrl=ev.target.result;document.getElementById('pPreview').innerHTML='<img src="'+photoDataUrl+'">';};
-  reader.readAsDataURL(file);
+  if(!file.type.startsWith('image/')){toast('Please select an image','err');return;}
+  compressPhoto(file,600,600,0.85).then(function(compressed){
+    photoDataUrl=compressed;
+    document.getElementById('pPreview').innerHTML='<img src="'+compressed+'">';
+  });
 }
 
 async function saveGuide(){
@@ -568,18 +569,41 @@ async function openPhotosModal(gid){
   ,[{label:'Done',cls:'btn-xs primary',fn:'closeModal();renderManageGuides()'}]);
 }
 
+function compressPhoto(file,maxW,maxH,quality){
+  return new Promise(function(res){
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      var img=new Image();
+      img.onload=function(){
+        var w=img.width,h=img.height;
+        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+        if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
+        var canvas=document.createElement('canvas');
+        canvas.width=w;canvas.height=h;
+        var ctx=canvas.getContext('2d');
+        ctx.drawImage(img,0,0,w,h);
+        res(canvas.toDataURL('image/jpeg',quality));
+      };
+      img.src=ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
 async function uploadPhotos(e,gid,current){
   const files=Array.from(e.target.files).slice(0,10-current);
+  if(!files.length) return;
+  toast('Uploading...','ok');
+  let added=0;
   for(let i=0;i<files.length;i++){
     const file=files[i];
-    if(file.size>2*1024*1024){toast(file.name+' over 2MB — skipped','err');continue;}
-    await new Promise(res=>{
-      const reader=new FileReader();
-      reader.onload=async ev=>{await sb.from('guide_photos').insert({guide_id:gid,url:ev.target.result,sort_order:current+i});res();};
-      reader.readAsDataURL(file);
-    });
+    if(!file.type.startsWith('image/')){toast(file.name+' not an image — skipped','err');continue;}
+    try{
+      const compressed=await compressPhoto(file,1200,800,0.82);
+      await sb.from('guide_photos').insert({guide_id:gid,url:compressed,sort_order:current+i});
+      added++;
+    }catch(err){toast('Error uploading '+file.name,'err');}
   }
-  toast(files.length+' photo(s) added ✓','ok');
+  toast(added+' photo(s) added ✓','ok');
   openPhotosModal(gid);
 }
 async function deletePhoto(pid,gid){if(!confirm('Delete this photo?'))return;await sb.from('guide_photos').delete().eq('id',pid);toast('Photo deleted','ok');openPhotosModal(gid);}
@@ -599,12 +623,26 @@ else document.getElementById('profileContent').innerHTML='<div class="empty" sty
 
 <script>
 (function(){
+  // PWA Manifest with VM logo
   try{
-    var m=JSON.stringify({name:"Visit Morocco Guides",short_name:"VMT Guides",start_url:"/",display:"standalone",background_color:"#080F1E",theme_color:"#080F1E",icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23080F1E' rx='20'/%3E%3Ctext y='.9em' font-size='80'%3E%F0%9F%A7%AD%3C/text%3E%3C/svg%3E",sizes:"192x192",type:"image/svg+xml"}]});
+    var m=JSON.stringify({
+      name:"VM Guides",
+      short_name:"VM Guides",
+      start_url:"/",
+      display:"standalone",
+      background_color:"#080F1E",
+      theme_color:"#080F1E",
+      icons:[
+        {src:"VMLOGO",sizes:"192x192",type:"image/svg+xml"},
+        {src:"VMLOGO",sizes:"512x512",type:"image/svg+xml"}
+      ]
+    }).replace(/VMLOGO/g,"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23080F1E' rx='16'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-family='Georgia,serif' font-size='44' font-weight='bold' fill='white'%3EVM%3C/text%3E%3C/svg%3E");
     var b=new Blob([m],{type:'application/json'});
     var el=document.getElementById('pwa-manifest');
     if(el) el.setAttribute('href',URL.createObjectURL(b));
   }catch(e){}
+
+  // Service Worker
   if('serviceWorker' in navigator){
     window.addEventListener('load',function(){
       try{
@@ -613,14 +651,22 @@ else document.getElementById('profileContent').innerHTML='<div class="empty" sty
       }catch(e){}
     });
   }
-  if(/iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase())&&!window.navigator.standalone&&!localStorage.getItem('pwa-ok')){
+
+  // iOS install banner — ONLY show on admin/agent pages, never on guide profile
+  function showInstallBanner(){
+    if(!(/iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase()))) return;
+    if(window.navigator.standalone) return;
+    if(localStorage.getItem('pwa-ok')) return;
+    // Only show if user is on admin or agent page (not a guide profile link)
+    var hasGuideParam = new URLSearchParams(window.location.search).get('guide');
+    if(hasGuideParam) return; // Client viewing a guide profile — do NOT show banner
     setTimeout(function(){
       try{
         var d=document.createElement('div');
         d.style.cssText='position:fixed;bottom:0;left:0;right:0;background:#112240;border-top:1px solid #2A4A72;padding:12px 16px;z-index:9999;display:flex;align-items:center;gap:10px;font-family:Outfit,sans-serif;box-shadow:0 -4px 20px rgba(0,0,0,.4)';
         var icon=document.createElement('span');icon.style.fontSize='20px';icon.textContent='📲';
         var txt=document.createElement('div');txt.style.flex='1';
-        var t1=document.createElement('div');t1.style.cssText='color:#EEF2FF;font-size:13px;font-weight:600';t1.textContent='Install this app';
+        var t1=document.createElement('div');t1.style.cssText='color:#EEF2FF;font-size:13px;font-weight:600';t1.textContent='Install VM Guides';
         var t2=document.createElement('div');t2.style.cssText='color:#8BA3C7;font-size:11px';t2.innerHTML='Tap <b>Share</b> then <b>Add to Home Screen</b>';
         txt.appendChild(t1);txt.appendChild(t2);
         var btn=document.createElement('button');
@@ -630,8 +676,9 @@ else document.getElementById('profileContent').innerHTML='<div class="empty" sty
         d.appendChild(icon);d.appendChild(txt);d.appendChild(btn);
         document.body.appendChild(d);
       }catch(e){}
-    },2500);
+    },3000);
   }
+  showInstallBanner();
 })();
 </script>
 </body>
